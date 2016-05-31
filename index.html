@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gradio by haecker-felix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Gradio</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/haecker-felix/gradio" class="btn">View on GitHub</a>
+      <a href="https://github.com/haecker-felix/gradio/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/haecker-felix/gradio/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="gradio" class="anchor" href="#gradio" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gradio</h1>
+
+<p>A GTK3 app for finding and listening to internet radio stations.</p>
+
+<p align="center">
+  <img alt="Library View" src="http://i.imgur.com/yMK0v1b.png">
+  <img alt="Search View" src="http://i.imgur.com/WibRApn.png)">
+</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Search radio stations (worldwide)</li>
+<li>Manageable library</li>
+<li>Vote for radio stations</li>
+<li>See details of the station</li>
+<li>Notifications</li>
+<li>Grid/List view </li>
+<li>MPRIS Support (Sound menu)</li>
+</ul>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>For gradio:</p>
+
+<ul>
+<li>glib-2.0</li>
+<li>gtk+-3.0 <em>&gt;=3.14</em>
+</li>
+<li>gstreamer-1.0</li>
+<li>json-glib-1.0</li>
+<li>gio-2.0</li>
+<li>gee-0.8</li>
+<li>libsoup-2.4</li>
+</ul>
+
+<p>For compiling:</p>
+
+<ul>
+<li>General c/c++ libs &amp; compiler</li>
+<li>cmake</li>
+<li>git</li>
+<li>valac</li>
+</ul>
+
+<p><strong>Debian</strong></p>
+
+<div class="highlight highlight-source-shell"><pre>sudo apt-get install build-essential valac cmake glib2.0 gtk+3.0 gstreamer1.0 libjson-glib-dev libsoup2.4</pre></div>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<h3>
+<a id="source" class="anchor" href="#source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Source</h3>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> <span class="pl-k">~</span>/Downloads
+git clone https://github.com/haecker-felix/gradio.git
+<span class="pl-c1">cd</span> gradio
+mkdir build
+<span class="pl-c1">cd</span> build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+make
+sudo make install</pre></div>
+
+<h3>
+<a id="ubuntu" class="anchor" href="#ubuntu" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ubuntu</h3>
+
+<p>For Ubuntu based distros (16.04) you can add the <a href="https://code.launchpad.net/%7Ehaecker-felix/+archive/ubuntu/gradio-daily">daily ppa</a>.</p>
+
+<pre><code>deb http://ppa.launchpad.net/haecker-felix/gradio-daily/ubuntu xenial main
+deb-src http://ppa.launchpad.net/haecker-felix/gradio-daily/ubuntu xenial main
+sudo apt-get update
+sudo apt-get install gradio
+</code></pre>
+
+<h2>
+<a id="uninstall" class="anchor" href="#uninstall" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Uninstall</h2>
+
+<p>If you install from source you must have the original compiled source to uninstall. <code>cmake</code> does not provide a <code>make uninstall</code> but list all the files installed on the system in <code>install_manifest.txt</code>. You can delete each file listed seperatly or run:</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> <span class="pl-k">~</span>/Downloads/gradio/build
+sudo xargs rm <span class="pl-k">&lt;</span> install_manifest.txt</pre></div>
+
+<h2>
+<a id="to-do" class="anchor" href="#to-do" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To-do</h2>
+
+<ul>
+<li>Create new radio stations</li>
+<li>Edit radio stations</li>
+<li>Delete radio stations</li>
+<li>Advanced search</li>
+<li>Adding server stats</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/haecker-felix/gradio">Gradio</a> is maintained by <a href="https://github.com/haecker-felix">haecker-felix</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
