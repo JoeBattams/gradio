@@ -22,6 +22,7 @@ namespace Gradio{
 		private int64 max_id = int64.MIN;
 
 		public signal void null_items();
+		public signal void items_cleared();
 
 		public StationModel(){
 
@@ -141,13 +142,15 @@ namespace Gradio{
 	  	}
 
 	  	public void clear () {
+	  		items_cleared();
+
 	    		int s = this.stations.length;
 	    		this.stations.remove_range (0, stations.length);
 	    		this.min_id = int64.MAX;
 	    		this.max_id = int64.MIN;
 	    		this.items_changed (0, s, 0);
 
-	    		null_items();
+
 	  	}
 
 	  	public void remove_station (RadioStation t) {

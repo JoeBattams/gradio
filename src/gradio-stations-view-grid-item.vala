@@ -91,6 +91,7 @@ namespace Gradio{
 		}
 
 		~GridItem(){
+			message(station.Title + " REF COUNT: " + this.ref_count.to_string());
 			message(station.Title + " Grid item wurde zerstört");
 		}
 

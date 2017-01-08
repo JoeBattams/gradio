@@ -203,6 +203,16 @@ namespace Gradio{
 		}
 
 		[GtkCallback]
+		private void SearchEntry_search_changed(){
+			string search_term = SearchEntry.get_text();
+
+			if(search_term != "" && search_term.length >= 3){
+				search_page.search(SearchEntry.get_text());
+				MainStack.set_visible_child_name("search_page");
+			}
+		}
+
+		[GtkCallback]
         	private void VolumeButton_value_changed (double value) {
 			App.player.set_volume(value);
 			Settings.volume_position = value;

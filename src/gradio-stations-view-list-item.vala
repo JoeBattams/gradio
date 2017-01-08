@@ -176,54 +176,6 @@ namespace Gradio{
 
 			return false;
 		}
-
-		//
-		// Animation
-		//
-		const int TRANSITION_DURATION = 200 * 1000;
-
-  		private int64 start_time;
-  		private int64 end_time;
-
-		inline double ease_out_cubic (double t) {
-  			double p = t - 1;
-  			return p * p * p +1;
-		}
-
-		public void fade_in () {
-    			if (this.get_realized ()) {
-      				this.show ();
-    	  			return;
-    			}
-
-    			ulong realize_id = 0;
-    			realize_id = this.realize.connect (() => {
-	      			this.start_time = this.get_frame_clock ().get_frame_time ();
-	      			this.end_time = start_time + TRANSITION_DURATION;
-	      			this.add_tick_callback (anim_tick);
-	      			this.disconnect (realize_id);
-    			});
-
-    			this.show ();
-  		}
-
-  		private bool anim_tick (Gtk.Widget widget, Gdk.FrameClock frame_clock) {
-    			int64 now = frame_clock.get_frame_time ();
-
-    			if (now > end_time) {
-      				this.opacity = 1.0;
-      				return false;
-    			}
-
-    			double t = (now - start_time) / (double)(end_time - start_time);
-
-    			t = ease_out_cubic (t);
-
-    			this.opacity = t;
-
-    			return true;
-  		}
-
 	}
 
 }

@@ -24,6 +24,8 @@ namespace Gradio{
 		private StationsView stationsview;
 		private StationProvider provider;
 
+		private string search_text;
+
 		public SearchPage(){
 			stationsview = new StationsView();
 			provider = new StationProvider(ref stationsview.model);
@@ -32,13 +34,15 @@ namespace Gradio{
 				stationsview.show_no_results();
 			});
 
+
+
 			this.add(stationsview);
 		}
 
 		public void search(string txt){
-			message("Searching for \"%s\".", txt);
-
 			string address = RadioBrowser.radio_stations_by_name + txt;
+
+			message("Searching for \"%s\".", txt);
 			provider.set_address(address);
 		}
 

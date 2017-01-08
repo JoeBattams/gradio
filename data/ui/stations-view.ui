@@ -111,13 +111,13 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkFlowBox" id="GridViewFlowBox">
+                              <object class="GtkBox" id="GridItems">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="margin_bottom">40</property>
-                                <property name="homogeneous">True</property>
-                                <property name="min_children_per_line">1</property>
-                                <property name="selection_mode">none</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
                               </object>
                               <packing>
                                 <property name="index">-1</property>
@@ -222,10 +222,13 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkListBox" id="ListViewListBox">
+                              <object class="GtkBox" id="ListItems">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="selection_mode">none</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
                               </object>
                               <packing>
                                 <property name="index">-1</property>

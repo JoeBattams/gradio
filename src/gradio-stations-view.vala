@@ -39,41 +39,47 @@ namespace Gradio{
 		[GtkChild]
 		private Box ListViewBox;
 		[GtkChild]
-		private FlowBox GridViewFlowBox;
-		[GtkChild]
-		private ListBox ListViewListBox;
-		[GtkChild]
 		private Stack StationsStack;
 
+		[GtkChild]
+		private Box GridItems;
+		[GtkChild]
+		private Box ListItems;
+
+		private FlowBox GridViewFlowBox;
+		private ListBox ListViewListBox;
+
 		public StationsView(){
+			GridViewFlowBox = new FlowBox();
+			ListViewListBox = new ListBox();
+
+			GridItems.add(GridViewFlowBox);
+			ListItems.add(ListViewListBox);
+
 			show_loading();
 			connect_signals();
 		}
 
 		private void connect_signals(){
-
 			GridViewFlowBox.bind_model (this.model, (obj) => {
      				assert (obj is RadioStation);
 
 				weak RadioStation station = (RadioStation)obj;
 				GridItem item = new GridItem(station);
 
-				//TODO: ADD Animations
-				//item.fade_in();
+				show_correct_view();
+      				return item;
+			});
+
+			ListViewListBox.bind_model (this.model, (obj) => {
+     				assert (obj is RadioStation);
+
+     				weak RadioStation station = (RadioStation)obj;
+				var item = new ListItem(station);
 
 				show_correct_view();
       				return item;
-      				//return null;
 			});
-
-			// ListViewListBox.bind_model (this.model, (obj) => {
-   //   				assert (obj is RadioStation);
-			// 	var item = new ListItem((RadioStation)obj);
-
-			// 	show_correct_view();
-			// 	item.fade_in ();
-   //    				return item;
-			// });
 
 		}
 

@@ -106,8 +106,6 @@ namespace Gradio{
 
 						var station = new RadioStation.from_json_data(radio_station_data);
 
-						//Thread.usleep(10000);
-
 						Idle.add(() => {
 							model.add(station);
 							return false;
