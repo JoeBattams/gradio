@@ -196,7 +196,7 @@ namespace Gradio{
 		private void SearchEntry_activate(Gtk.Entry entry){
 			string search_term = SearchEntry.get_text();
 
-			if(search_term != "" && search_term.length > 3){
+			if(search_term != "" && search_term.length >= 3){
 				search_page.search(SearchEntry.get_text());
 				MainStack.set_visible_child_name("search_page");
 			}
@@ -213,15 +213,15 @@ namespace Gradio{
 			if(ListImage.get_visible()){
 				GridImage.set_visible(true);
 				ListImage.set_visible(false);
-				library_box.show_list_view();
-				discover_box.show_list_view();
 				Settings.use_grid_view = false;
+
+				search_page.show_list_view();
 			}else{
 				GridImage.set_visible(false);
 				ListImage.set_visible(true);
-				library_box.show_grid_view();
-				discover_box.show_grid_view();
 				Settings.use_grid_view = true;
+
+				search_page.show_grid_view();
 			}
 		}
 

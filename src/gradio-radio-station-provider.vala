@@ -14,9 +14,6 @@
  * along with Gradio.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//
-// TODO: Beim Eingabefeld einfach eine gewissene Zeit abwarten, bevor auftrag zum provider los geschickt wird.
-//
 
 
 namespace Gradio{
@@ -48,24 +45,24 @@ namespace Gradio{
 			id++;
 			actual_id = id;
 
-
 			// Wait for old thread to exit and reset cancellable
 			cancellable.cancel();
 			while(parser_thread_running){
-				message("Waiting for old thread...");
+				message("Waiting to cancel old thread...");
 			}
 			cancellable.reset();
-
 
 			address = a;
 
 			// Download the data and parse it
 			message ("Downloading data from \"%s\" ...", address);
-			Util.get_string_from_uri.begin(address, (obj, res) => {
 
+			Util.get_string_from_uri.begin(address, (obj, res) => {
 				data = Util.get_string_from_uri.end(res);
 
 				if(data != null && data != ""){
+					message("Dowloaded data. Starting parsing...");
+
 					model.clear();
 					parse_data.begin (id);
 				}
@@ -76,7 +73,6 @@ namespace Gradio{
 
 		private async void parse_data(int id){
 			if(id != actual_id){
-				warning("\n\n\n\n\nID != current_ID\n\n\n\n");
 				return;
 			}
 
@@ -110,7 +106,7 @@ namespace Gradio{
 
 						var station = new RadioStation.from_json_data(radio_station_data);
 
-						Thread.usleep(10000);
+						//Thread.usleep(10000);
 
 						Idle.add(() => {
 							model.add(station);

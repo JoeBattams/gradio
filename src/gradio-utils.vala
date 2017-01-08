@@ -20,31 +20,22 @@ using Gtk;
 public class Util{
 
 	public static async string get_string_from_uri (string url){
-		SourceFunc callback = get_string_from_uri.callback;
-		string output = "";
+		if(url != ""){
+			var session = new Soup.SessionAsync ();
+			session.user_agent = "gradio/"+ GRADIO_VERSION;
+			var message = new Soup.Message ("GET", url);
 
-		ThreadFunc<void*> run = () => {
-			if(url != ""){
-				var session = new Soup.Session ();
-				session.user_agent = "gradio/"+ GRADIO_VERSION;
-				var message = new Soup.Message ("GET", url);
+			session.queue_message (message, (session, msg) => {
+                		get_string_from_uri.callback ();
+            		});
+			yield;
 
-				session.send_message (message);
-				session.abort();
-
-				if((string)message.response_body.data != null)
-					output = (string)message.response_body.data;
+			if((string)message.response_body.data != null){
+				return (string)message.response_body.data;
 			}
 
-			Idle.add((owned) callback);
-			Thread.exit (1.to_pointer ());
-			return null;
-		};
-
-		new Thread<void*> ("parser_thread", run);
-
-		yield;
-		return output;
+		}
+		return null;
 	}
 
 	public static void remove_all_items_from_list_box (Gtk.ListBox container) {

@@ -90,6 +90,10 @@ namespace Gradio{
 			ChannelTagsLabel.set_text(station.Tags);
 		}
 
+		~GridItem(){
+			message(station.Title + " Grid item wurde zerstört");
+		}
+
 		private void connect_signals(){
 			station.played.connect(() => {
 				StopBox.set_visible(true);
@@ -117,14 +121,16 @@ namespace Gradio{
 		}
 
 		private void set_logo(){
-			Gdk.Pixbuf icon = null;
-			Gradio.App.imgprovider.get_station_logo.begin(station, 64, (obj, res) => {
-		        	icon = Gradio.App.imgprovider.get_station_logo.end(res);
+			//TODO: Reimplement image
 
-				if(icon != null){
-					ChannelLogoImage.set_from_pixbuf(icon);
-				}
-        		});
+			// Gdk.Pixbuf icon = null;
+			// Gradio.App.imgprovider.get_station_logo.begin(station, 64, (obj, res) => {
+		 //        	icon = Gradio.App.imgprovider.get_station_logo.end(res);
+
+			// 	if(icon != null){
+			// 		ChannelLogoImage.set_from_pixbuf(icon);
+			// 	}
+   //      		});
 		}
 
 		private void show_menu(bool b){

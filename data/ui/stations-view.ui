@@ -5,6 +5,8 @@
   <template class="GradioStationsView" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkOverlay">
@@ -65,7 +67,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Make sure you don't have a typo!</property>
+                        <property name="label" translatable="yes">No radio stations to show.</property>
                         <style>
                           <class name="dim-label"/>
                         </style>
@@ -86,7 +88,6 @@
               </object>
               <packing>
                 <property name="name">no-results</property>
-                <property name="title" translatable="yes">No Results</property>
               </packing>
             </child>
             <child>
@@ -130,7 +131,56 @@
                                 <property name="valign">end</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <placeholder/>
+                                  <object class="GtkBox" id="LoadMoreBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="no_show_all">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkButton" id="LoadMoreButton">
+                                        <property name="width_request">40</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="halign">center</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin_top">10</property>
+                                        <property name="margin_bottom">10</property>
+                                        <signal name="clicked" handler="LoadMoreButton_clicked" swapped="no"/>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">More...</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <style>
+                                          <class name="overview-more-button"/>
+                                        </style>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
                                 </child>
                               </object>
                             </child>
@@ -148,7 +198,6 @@
               </object>
               <packing>
                 <property name="name">grid-view</property>
-                <property name="title" translatable="yes">Grid View</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -208,7 +257,6 @@
               </object>
               <packing>
                 <property name="name">list-view</property>
-                <property name="title" translatable="yes">list-view</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -282,13 +330,12 @@
                 </child>
               </object>
               <packing>
-                <property name="name">empty-library-box</property>
-                <property name="title" translatable="yes">Empty Library</property>
+                <property name="name">empty-library</property>
                 <property name="position">3</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="EmptyBox">
+              <object class="GtkBox" id="LoadingBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
@@ -301,14 +348,13 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">12</property>
                     <child>
-                      <object class="GtkImage">
+                      <object class="GtkSpinner">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">content-loading-symbolic</property>
-                        <property name="icon_size">6</property>
+                        <property name="active">True</property>
                       </object>
                       <packing>
-                        <property name="expand">True</property>
+                        <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
@@ -322,8 +368,7 @@
                 </child>
               </object>
               <packing>
-                <property name="name">empty-box</property>
-                <property name="title" translatable="yes">page0</property>
+                <property name="name">loading</property>
                 <property name="position">4</property>
               </packing>
             </child>
@@ -350,49 +395,4 @@
       </packing>
     </child>
   </template>
-  <object class="GtkBox" id="LoadMoreBox">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="no_show_all">True</property>
-    <property name="orientation">vertical</property>
-    <child>
-      <object class="GtkButton" id="LoadMoreButton">
-        <property name="width_request">40</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">10</property>
-        <signal name="clicked" handler="LoadMoreButton_clicked" swapped="no"/>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">More...</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-        <style>
-          <class name="overview-more-button"/>
-        </style>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-  </object>
 </interface>

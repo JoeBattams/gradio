@@ -64,10 +64,6 @@ namespace Gradio{
 					Title = "[BROKEN] " + Title;
 
 				connect_signals();
-
-				counter_id = Gradio.StationRegistry.register_station(this);
-			}else{
-				message("I'm a dummy station. I'm not registered!");
 			}
 		}
 
@@ -98,7 +94,6 @@ namespace Gradio{
 		}
 
 		~RadioStation(){
-			Gradio.StationRegistry.unregister_station(this);
 			App.player.station_played.disconnect( play_handler );
 			App.player.station_stopped.disconnect( stop_handler );
 			App.library.added_radio_station.disconnect( added_to_library_handler );

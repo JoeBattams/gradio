@@ -19,10 +19,7 @@ using Gtk;
 namespace Gradio{
 
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/search-page.ui")]
-	public class SearchPage : Gtk.Box{
-
-		[GtkChild]
-		private Box sview_box;
+	public class SearchPage : Gtk.Box, Page{
 
 		private StationsView stationsview;
 		private StationProvider provider;
@@ -31,8 +28,11 @@ namespace Gradio{
 			stationsview = new StationsView();
 			provider = new StationProvider(ref stationsview.model);
 
-			sview_box.add(stationsview);
-			sview_box.show_all();
+			stationsview.model.null_items.connect(() => {
+				stationsview.show_no_results();
+			});
+
+			this.add(stationsview);
 		}
 
 		public void search(string txt){
@@ -40,6 +40,14 @@ namespace Gradio{
 
 			string address = RadioBrowser.radio_stations_by_name + txt;
 			provider.set_address(address);
+		}
+
+		public void show_grid_view(){
+			stationsview.show_grid_view();
+		}
+
+		public void show_list_view(){
+			stationsview.show_list_view();
 		}
 	}
 }
