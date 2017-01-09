@@ -193,16 +193,6 @@ namespace Gradio{
 		}
 
 		[GtkCallback]
-		private void SearchEntry_activate(Gtk.Entry entry){
-			string search_term = SearchEntry.get_text();
-
-			if(search_term != "" && search_term.length >= 3){
-				search_page.search(SearchEntry.get_text());
-				MainStack.set_visible_child_name("search_page");
-			}
-		}
-
-		[GtkCallback]
 		private void SearchEntry_search_changed(){
 			string search_term = SearchEntry.get_text();
 

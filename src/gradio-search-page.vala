@@ -26,6 +26,10 @@ namespace Gradio{
 
 		private string search_text;
 
+		// wait 1,3 seconds before spawning a new search thread
+		private int search_delay = 1000;
+		private uint delayed_changed_id;
+
 		public SearchPage(){
 			stationsview = new StationsView();
 			provider = new StationProvider(ref stationsview.model);
@@ -34,16 +38,12 @@ namespace Gradio{
 				stationsview.show_no_results();
 			});
 
-
-
 			this.add(stationsview);
 		}
 
 		public void search(string txt){
-			string address = RadioBrowser.radio_stations_by_name + txt;
-
-			message("Searching for \"%s\".", txt);
-			provider.set_address(address);
+			search_text = txt;
+			reset_timeout();
 		}
 
 		public void show_grid_view(){
@@ -52,6 +52,24 @@ namespace Gradio{
 
 		public void show_list_view(){
 			stationsview.show_list_view();
+		}
+
+
+		private void reset_timeout(){
+			if(delayed_changed_id > 0)
+				Source.remove(delayed_changed_id);
+			delayed_changed_id = Timeout.add(search_delay, timeout);
+		}
+
+		private bool timeout(){
+			string address = RadioBrowser.radio_stations_by_name + search_text;
+
+			message("Searching for \"%s\".", search_text);
+			provider.set_address(address);
+
+			delayed_changed_id = 0;
+
+			return false;
 		}
 	}
 }
