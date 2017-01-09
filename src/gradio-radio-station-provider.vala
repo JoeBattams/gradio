@@ -48,7 +48,7 @@ namespace Gradio{
 			// Wait for old thread to exit and reset cancellable
 			cancellable.cancel();
 			while(parser_thread_running){
-				message("Waiting to cancel old thread...");
+				message("Cancelling earlier search...");
 			}
 			cancellable.reset();
 
@@ -100,6 +100,8 @@ namespace Gradio{
 						progress(p);
 
 						message("Parsing station " + i.to_string() + "/" + (items-1).to_string() + ". " + (p*100).to_string() + " %");
+
+						Thread.usleep(100000);
 
 						var radio_station = radio_stations.get_element(i);
 						var radio_station_data = radio_station.get_object ();

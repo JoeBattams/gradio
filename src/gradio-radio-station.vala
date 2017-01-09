@@ -94,10 +94,6 @@ namespace Gradio{
 		}
 
 		~RadioStation(){
-			message(Title + " REF COUNT: " + this.ref_count.to_string());
-			message(Title + " Radio Station wurde zerstört");
-			this.unref();
-
 			App.player.station_played.disconnect( play_handler );
 			App.player.station_stopped.disconnect( stop_handler );
 			App.library.added_radio_station.disconnect( added_to_library_handler );

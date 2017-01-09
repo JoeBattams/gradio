@@ -90,11 +90,6 @@ namespace Gradio{
 			ChannelTagsLabel.set_text(station.Tags);
 		}
 
-		~GridItem(){
-			message(station.Title + " REF COUNT: " + this.ref_count.to_string());
-			message(station.Title + " Grid item wurde zerstört");
-		}
-
 		private void connect_signals(){
 			station.played.connect(() => {
 				StopBox.set_visible(true);
