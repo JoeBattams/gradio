@@ -74,7 +74,7 @@ namespace Gradio{
 				return false;
 			}else{
 				library_model.remove(station);
-				remove_radio_station(station);
+				removed_radio_station(station);
 				return true;
 			}
 		}

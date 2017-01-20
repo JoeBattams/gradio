@@ -152,10 +152,11 @@ namespace Gradio{
 
 		[GtkCallback]
 		private void AddRemoveButton_clicked(Button button){
-			if(App.library.contains_station(station.ID))
+			if(App.library.contains_station(station.ID)){
 				App.library.remove_radio_station(station);
-			else
+			}else{
 				App.library.add_radio_station(station);
+			}
 			show_menu(false);
 		}
 
