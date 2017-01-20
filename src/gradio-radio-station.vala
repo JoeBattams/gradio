@@ -16,9 +16,6 @@
 
 namespace Gradio{
 	public class RadioStation : Object{
-
-		public int counter_id;
-
 		public string Title { get; set; }
 		public string Homepage { get; set; }
 		public string Language { get; set; }
@@ -33,16 +30,14 @@ namespace Gradio{
 		public bool Broken { get; set; }
 
 		public bool is_playing = false;
-		public signal void stopped(int cid);
-		public signal void played(int cid);
+		public signal void stopped();
+		public signal void played();
 
 		public bool is_in_library = false;
-		public signal void added_to_library(int cid);
-		public signal void removed_from_library(int cid);
+		public signal void added_to_library();
+		public signal void removed_from_library();
 
-		public RadioStation(string title = "", string homepage = "", string language = "", string id = "", string icon = "", string country = "",
-				    string tags = "", string state = "", string votes = "", string codec = "", string bitrate = "", bool broken = false){
-
+		public RadioStation(string title = "", string homepage = "", string language = "", string id = "", string icon = "", string country = "", string tags = "", string state = "", string votes = "", string codec = "", string bitrate = "", bool broken = false){
 			if(id != ""){
 				Title = title;
 				Homepage = homepage;
@@ -69,6 +64,7 @@ namespace Gradio{
 
 		public RadioStation.from_json_data(Json.Object radio_station_data){
 			load_data_from_json(radio_station_data);
+			connect_signals();
 		}
 
 		~RadioStation(){
@@ -107,7 +103,7 @@ namespace Gradio{
 			if(Title != null){
 				if(App.player.current_station.ID == ID){
 					is_playing = false;
-					stopped(counter_id);
+					stopped();
 				}
 			}else{
 				warning("Catched crash of Gradio.");
@@ -119,10 +115,10 @@ namespace Gradio{
 			if(Title != null){
 				if(App.player.current_station.ID == ID){
 					is_playing = true;
-					played(counter_id);
+					played();
 				}else{
 					is_playing = false;
-					stopped(counter_id);
+					stopped();
 				}
 			}else{
 				warning("Catched crash of Gradio.");
@@ -133,7 +129,8 @@ namespace Gradio{
 			if(Title != null){
 				if(s.ID == ID){
 					is_in_library = true;
-					added_to_library(counter_id);
+					added_to_library();
+
 				}
 			}else{
 				warning("Catched crash of Gradio.");
@@ -144,11 +141,12 @@ namespace Gradio{
 			if(Title != null){
 				if(s.ID == ID){
 					is_in_library = false;
-					removed_from_library(counter_id);
+					removed_from_library();
 				}
 			}else{
 				warning("Catched crash of Gradio.");
 			}
+			message("but i'm here");
 		}
 
 		// Returns the playable url for the station
