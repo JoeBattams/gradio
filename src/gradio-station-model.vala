@@ -17,6 +17,11 @@
 namespace Gradio{
 
 	public class StationModel : GLib.Object, GLib.ListModel {
+
+		// <STATION_ID, INDEX>
+		private GLib.HashTable<int, int>  index = new GLib.HashTable<int, int>(direct_hash, direct_equal);
+
+		// STATIONS ITSELF
   		private GLib.GenericArray<RadioStation> stations = new GLib.GenericArray<RadioStation> ();
 		private int64 min_id = int64.MAX;
 		private int64 max_id = int64.MIN;
@@ -87,51 +92,18 @@ namespace Gradio{
     			return typeof (RadioStation);
   		}
 
-	  	private void insert_sorted (RadioStation station) {
-		    	/* Determine the end we start at.
-		       	Higher IDs are at the beginning of the list */
-		    	int insert_pos = -1;
-		    	if (station.ID > max_id) {
-		      		insert_pos = 0;
-		    	} else if (station.ID < min_id) {
-		      		insert_pos = stations.length;
-		    	} else {
-			      	// This case is weird(?), but just estimate the starting point
-			      	int64 half = (max_id - min_id) / 2;
-			      	if (station.ID > min_id + half) {
-					// we start at the beginning
-					for (int i = 0, p = stations.length; i < p; i ++) {
-				  		if (stations.get (i).ID <= station.ID) {
-				    			insert_pos = i;
-				    			break;
-				  		}
-					}
-			      	} else {
-					// we start at the end
-					for (int i = stations.length - 1; i >= 0; i --) {
-				  		if (stations.get (i).ID >= station.ID) {
-				    			insert_pos = i + 1;
-				    			break;
-				  		}
-					}
-			      	}
-	    		}
-
-	    		assert (insert_pos != -1);
-	    		stations.insert (insert_pos, station);
-
-	    		this.items_changed (insert_pos, 0, 1);
-	  	}
-
 	  	public void add (RadioStation station) {
 	    		assert (station.ID > 0);
 
-
 			int insert_pos = stations.length;
 			stations.insert (insert_pos, station);
+			index.insert(station.ID, insert_pos);
+
+			message("Added station!");
+			message("Index Pos: " + insert_pos.to_string());
+			message("Station ID: " + station.ID.to_string());
 
 			this.items_changed (insert_pos, 0, 1);
-
 
 	      		if (station.ID > this.max_id)
 				this.max_id = station.ID;
@@ -153,27 +125,36 @@ namespace Gradio{
 
 	  	}
 
-	  	public void remove_station (RadioStation t) {
-	      		int pos = 0;
-	      		for (int i = 0; i < stations.length; i ++) {
-				RadioStation station = stations.get (i);
-				if (t == station) {
-		  			pos = i;
-		  			break;
-				}
-	      		}
+	  	public void remove (RadioStation station) {
+	  		//message("Removed station!");
+			//message("Station ID: " + station.ID.to_string());
+
+	      		int pos = index[station.ID];
+
+	      		message("=> Index Pos: " + pos.to_string());
+
+	   //    		for (int i = 0; i < stations.length; i ++) {
+				// RadioStation station = stations.get (i);
+				// if (t == station) {
+		  // 			pos = i;
+		  // 			break;
+				// }
+	   //    		}
 
 	      		this.remove_at_pos (pos);
 	     		this.items_changed (pos, 1, 0);
 	  	}
 
 
-	  	public bool contains_id (int64 station_id) {
-	    		for (int i = 0; i < stations.length; i ++) {
-	      			RadioStation station = stations.get (i);
-	      			if (station.ID == station_id)
-					return true;
-	    		}
+	  	public bool contains_id (int station_id) {
+	  		if(index[station_id] != 0)
+	  			return true;
+
+	    // 		for (int i = 0; i < stations.length; i ++) {
+	    //   			RadioStation station = stations.get (i);
+	    //   			if (station.ID == station_id)
+					// return true;
+	    // 		}
 
 	    		return false;
 	  	}
@@ -203,3 +184,4 @@ namespace Gradio{
 
 	}
 }
+

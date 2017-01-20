@@ -17,5 +17,6 @@
     <file>ui/status-label.ui</file>
     <file>ui/app-menu.ui</file>
     <file>ui/search-page.ui</file>
+    <file>ui/library-page.ui</file>
   </gresource>
 </gresources>

@@ -57,7 +57,6 @@ namespace Gradio{
 
 		PlayerToolbar player_toolbar;
 		DiscoverBox discover_box;
-		LibraryBox library_box;
 
 		private StatusIcon trayicon;
 
@@ -65,6 +64,7 @@ namespace Gradio{
 		public signal void tray_activate();
 
 		SearchPage search_page;
+		LibraryPage library_page;
 
 
 		private App app;
@@ -110,6 +110,9 @@ namespace Gradio{
 			search_page = new SearchPage();
 			MainStack.add_named(search_page, "search_page");
 
+			library_page = new LibraryPage();
+			MainStack.add_titled(library_page, "library_page", "Library");
+
 			VolumeButton.set_relief(ReliefStyle.NORMAL);
 			VolumeButton.set_value(Settings.volume_position);
 
@@ -123,9 +126,7 @@ namespace Gradio{
 	        	player_toolbar = new PlayerToolbar();
 	       		player_toolbar.set_visible(false);
 	      		discover_box = new DiscoverBox();
-			library_box = new LibraryBox();
 
-			MainStack.add_titled(library_box, "library_box", "Library");
 	        	MainStack.add_titled(discover_box, "discover_box", "Discover");
 
 			//Load css
@@ -134,13 +135,11 @@ namespace Gradio{
 			if(!(Settings.use_grid_view)){
 				GridImage.set_visible(true);
 				ListImage.set_visible(false);
-				library_box.show_list_view();
 				discover_box.show_list_view();
 				Settings.use_grid_view = false;
 			}else{
 				GridImage.set_visible(false);
 				ListImage.set_visible(true);
-				library_box.show_grid_view();
 				Settings.use_grid_view = true;
 			}
 	       		Bottom.pack_end(player_toolbar);
@@ -215,12 +214,14 @@ namespace Gradio{
 				ListImage.set_visible(false);
 				Settings.use_grid_view = false;
 
+				library_page.show_list_view();
 				search_page.show_list_view();
 			}else{
 				GridImage.set_visible(false);
 				ListImage.set_visible(true);
 				Settings.use_grid_view = true;
 
+				library_page.show_grid_view();
 				search_page.show_grid_view();
 			}
 		}

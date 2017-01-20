@@ -21,8 +21,9 @@ namespace Gradio{
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/search-page.ui")]
 	public class SearchPage : Gtk.Box, Page{
 
-		private StationsView stationsview;
-		private StationProvider provider;
+		private StationView station_view;
+		private StationModel station_model;
+		private StationProvider station_provider;
 
 		private string search_text;
 
@@ -31,14 +32,15 @@ namespace Gradio{
 		private uint delayed_changed_id;
 
 		public SearchPage(){
-			stationsview = new StationsView();
-			provider = new StationProvider(ref stationsview.model);
+			station_model =  new StationModel();
+			station_view = new StationView(ref station_model);
+			station_provider = new StationProvider(ref station_model);
 
-			stationsview.model.null_items.connect(() => {
-				stationsview.show_no_results();
+			station_model.null_items.connect(() => {
+				station_view.show_no_results();
 			});
 
-			this.add(stationsview);
+			this.add(station_view);
 		}
 
 		public void search(string txt){
@@ -47,11 +49,11 @@ namespace Gradio{
 		}
 
 		public void show_grid_view(){
-			stationsview.show_grid_view();
+			station_view.show_grid_view();
 		}
 
 		public void show_list_view(){
-			stationsview.show_list_view();
+			station_view.show_list_view();
 		}
 
 
@@ -65,7 +67,7 @@ namespace Gradio{
 			string address = RadioBrowser.radio_stations_by_name + search_text;
 
 			message("Searching for \"%s\".", search_text);
-			provider.set_address(address);
+			station_provider.set_address(address);
 
 			delayed_changed_id = 0;
 

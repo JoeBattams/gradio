@@ -49,7 +49,6 @@ namespace Gradio {
 			player = new AudioPlayer();
 
 		 	library = new Library();
-			library.read_data();
 
 			create_app_menu();
 
@@ -73,8 +72,9 @@ namespace Gradio {
 			if(Settings.resume_playback_on_startup && Settings.previous_station != 0){
 				message("Continue playback");
 
-				RadioStation s = new RadioStation.from_id(Settings.previous_station);
-				player.set_radio_station(s);
+				//TODO: re-add continue on startup feature
+				//RadioStation s = new RadioStation.from_id(Settings.previous_station);
+				//player.set_radio_station(s);
 			}
 		}
 

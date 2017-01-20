@@ -19,18 +19,18 @@ namespace Gradio{
 
 		public int counter_id;
 
-		public string Title = "";
-		public string Homepage = "";
-		public string Language = "";
-		public int ID = -1;
-		public string Icon = "";
-		public string Country = "";
-		public string Tags = "";
-		public string State = "";
-		public string Votes = "";
-		public string Codec = "";
-		public string Bitrate = "";
-		public bool Broken = true;
+		public string Title { get; set; }
+		public string Homepage { get; set; }
+		public string Language { get; set; }
+		public int ID { get; set; }
+		public string Icon { get; set; }
+		public string Country { get; set; }
+		public string Tags { get; set; }
+		public string State { get; set; }
+		public string Votes { get; set; }
+		public string Codec { get; set; }
+		public string Bitrate { get; set; }
+		public bool Broken { get; set; }
 
 		public bool is_playing = false;
 		public signal void stopped(int cid);
@@ -69,28 +69,6 @@ namespace Gradio{
 
 		public RadioStation.from_json_data(Json.Object radio_station_data){
 			load_data_from_json(radio_station_data);
-		}
-
-		public RadioStation.from_id(int id){
-			Json.Parser parser = new Json.Parser ();
-			RadioStation new_station = null;
-
-			Util.get_string_from_uri.begin(RadioBrowser.radio_stations_by_id + id.to_string(), (obj, res) => {
-				string data = Util.get_string_from_uri.end(res);
-
-				if(data != ""){
-					parser.load_from_data (data);
-					var root = parser.get_root ();
-					var radio_stations = root.get_array ();
-
-					if(radio_stations.get_length() != 0){
-						var radio_station = radio_stations.get_element(0);
-						var radio_station_data = radio_station.get_object ();
-
-						load_data_from_json(radio_station_data);
-					}
-				}
-			});
 		}
 
 		~RadioStation(){

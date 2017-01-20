@@ -71,6 +71,36 @@ namespace Gradio{
 
 		}
 
+		public void add_station_by_id(int id){
+			Json.Parser parser = new Json.Parser ();
+			RadioStation new_station = null;
+
+			Util.get_string_from_uri.begin(RadioBrowser.radio_stations_by_id + id.to_string(), (obj, res) => {
+				string data = Util.get_string_from_uri.end(res);
+
+				if(data != ""){
+					parser.load_from_data (data);
+					var root = parser.get_root ();
+					var radio_stations = root.get_array ();
+
+					if(radio_stations.get_length() != 0){
+						var radio_station = radio_stations.get_element(0);
+						var radio_station_data = radio_station.get_object ();
+
+						new_station = new RadioStation.from_json_data(radio_station_data);
+
+						Idle.add(() => {
+							model.add(new_station);
+							return false;
+						});
+					}else{
+						warning("Empty station data");
+					}
+				}
+			});
+
+		}
+
 		private async void parse_data(int id){
 			if(id != actual_id){
 				return;

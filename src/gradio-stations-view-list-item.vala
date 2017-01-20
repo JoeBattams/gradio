@@ -73,10 +73,11 @@ namespace Gradio{
 				AddBox.set_visible(true);
 				InLibraryImage.set_visible(false);
 			}
-			LikesLabel.set_text(station.Votes.to_string());
 
 			// Load basic information
 			set_logo();
+			LikesLabel.set_text(station.Votes.to_string());
+
 			ChannelNameLabel.set_text(station.Title);
 			ChannelLocationLabel.set_text(station.Country + " " + station.State);
 			ChannelTagsLabel.set_text(station.Tags);

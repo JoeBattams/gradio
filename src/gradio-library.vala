@@ -14,130 +14,155 @@
  * along with Gradio.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Sqlite;
+
 namespace Gradio{
 
 	public class Library : Gtk.Box{
 		public signal void added_radio_station(RadioStation s);
 		public signal void removed_radio_station(RadioStation s);
 
-		public HashTable<int,RadioStation> lib;
+		private StationProvider station_provider;
+		public static StationModel library_model;
 
-		StationModel library;
+		private Sqlite.Database db;
+		private string db_error_message;
 
-		private StationProvider provider;
-
+		string database_path;
 		string data_path;
 		string dir_path;
 
 		public Library(){
-			library = new StationModel();
-
-			lib = new HashTable<int,RadioStation>(direct_hash, direct_equal);
-			provider = new StationProvider(ref library);
-
+			database_path = Path.build_filename (Environment.get_user_data_dir (), "gradio", "gradio.db");
 			data_path = Path.build_filename (Environment.get_user_data_dir (), "gradio", "library.gradio");
 			dir_path = Path.build_filename (Environment.get_user_data_dir (), "gradio");
 
-			added_radio_station.connect(() => write_data());
-			removed_radio_station.connect(() => write_data());
+			library_model = new StationModel();
+			station_provider = new StationProvider(ref library_model);
+
+			open_database();
 		}
 
 		public bool contains_station(int id){
-			if(lib[id] != null)
+			if(library_model.contains_id(id))
 				return true;
 			else
 				return false;
 		}
 
-		public void add_radio_station_by_id(int id){
-			RadioStation station = new RadioStation.from_id(id);
-			lib[id] = station;
 
-			added_radio_station(station);
-		}
+		public bool add_radio_station(RadioStation station){
+			string query = "INSERT INTO library (station_id,folder_id) VALUES ("+station.ID.to_string()+", '0');";
 
-		public void remove_radio_station_by_id(int id){
-			RadioStation station = new RadioStation.from_id(id);
-			lib.remove(station.ID);
-
-			removed_radio_station(station);
-		}
-
-		public void add_radio_station(RadioStation station){
-			lib[station.ID] = station;
-
-			added_radio_station(station);
-		}
-
-		public void remove_radio_station(RadioStation station){
-			lib.remove(station.ID);
-
-			removed_radio_station(station);
-		}
-
-		public void write_data (){
-			message("Writing library data to: " + data_path);
-
-			try{
-				var file = File.new_for_path (data_path);
-				var dir = File.new_for_path (dir_path);
-
-				if(!file.query_exists ()){
-					if(!dir.query_exists ()){
-						dir.make_directory_with_parents ();
-					}
-					file.create (FileCreateFlags.NONE);
-				}else{
-					file.delete();
-					file.create (FileCreateFlags.NONE);
-				}
-
-				FileIOStream iostream = file.open_readwrite ();
-				iostream.seek (0, SeekType.END);
-
-				OutputStream ostream = iostream.output_stream;
-				DataOutputStream dostream = new DataOutputStream (ostream);
-
-				lib.foreach ((key, val) => {
-					try {
-						dostream.put_string (key.to_string()+"\n");
-					} catch (GLib.IOError e) {
-						error(e.message);
-					}
-				});
-			}catch(Error e){
-				error(e.message);
+			int return_code = db.exec (query, null, out db_error_message);
+			if (return_code != Sqlite.OK) {
+				critical ("Could not add item to database: %s\n", db_error_message);
+				return false;
+			}else{
+				library_model.add(station);
+				added_radio_station(station);
+				return true;
 			}
 		}
 
-		public void read_data (){
-			message("Reading library data from: " + data_path);
+		public bool remove_radio_station(RadioStation station){
+			string query = "DELETE FROM library WHERE station_id=" + station.ID.to_string();
 
-			try{
-				var file = File.new_for_path (data_path);
+			int return_code = db.exec (query, null, out db_error_message);
+			if (return_code != Sqlite.OK) {
+				critical ("Could not remove item from database: %s\n", db_error_message);
+				return false;
+			}else{
+				library_model.remove(station);
+				remove_radio_station(station);
+				return true;
+			}
+		}
 
-				if(file.query_exists ()){
-					var dis = new DataInputStream (file.read ());
-					string line;
 
-					while ((line = dis.read_line (null)) != null) {
+		private void open_database(){
+			message("Open database...");
 
-						RadioStation station = new RadioStation.from_id(int.parse(line));
+			File file = File.new_for_path (database_path);
 
-						if(station != null){
-							lib[int.parse(line)] = station;
-						}
-
-					}
-				}else{
-					message("No Gradio library found. ");
-				}
-			}catch(Error e){
-				error(e.message);
+			if(!file.query_exists()){
+				message("No database found.");
+				create_database();
+				return;
 			}
 
-			message("Successfully imported library data");
+			int return_code = Sqlite.Database.open (database_path.to_string(), out db);
 
+			if (return_code!= Sqlite.OK) {
+				critical ("Can't open database: %d: %s\n", db.errcode (), db.errmsg ());
+				return;
+			}
+
+			read_database();
+
+			message("Successfully opened database!");
+		}
+
+		private void read_database(){
+			message("Reading database data...");
+
+			Statement stmt;
+			int rc = 0;
+			int col, cols;
+
+			if ((rc = db.prepare_v2 ("SELECT * FROM library;", -1, out stmt, null)) == 1) {
+				critical ("SQL error: %d, %s\n", rc, db.errmsg ());
+				return;
+			}
+
+			cols = stmt.column_count();
+			do {
+				rc = stmt.step();
+				switch (rc) {
+				case Sqlite.DONE:
+					break;
+				case Sqlite.ROW:
+					station_provider.add_station_by_id(int.parse(stmt.column_text(0)));
+
+					break;
+				default:
+					printerr ("Error: %d, %s\n", rc, db.errmsg ());
+					break;
+				}
+			} while (rc == Sqlite.ROW);
+		}
+
+		private void create_database(){
+			message("Create database...");
+
+			File file = File.new_for_path (database_path);
+
+			if(!file.query_exists()){
+				file.create (FileCreateFlags.NONE);
+
+				open_database();
+			}else{
+				warning("Database already exists.");
+				open_database();
+			}
+		}
+
+		private void init_database(){
+			message("Initialize database...");
+
+			string query = """
+				CREATE TABLE "library" ('station_id' INTEGER, 'folder_id' INTEGER);
+				CREATE TABLE "library_folders" ('folder_id' INTEGER, 'folder_name' TEXT)
+				""";
+
+			int return_code = db.exec (query, null, out db_error_message);
+			if (return_code != Sqlite.OK) {
+				critical ("Could not initialize database: %s\n", db_error_message);
+				return ;
+			}
+
+			message("Successfully initialized database!");
+			open_database();
 		}
 
 	}

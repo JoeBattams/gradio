@@ -18,32 +18,29 @@ using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/library-box.ui")]
-	public class LibraryBox : Gtk.Box{
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/library-page.ui")]
+	public class LibraryPage : Gtk.Box, Page{
 
-		[GtkChild]
-		private Box ContentBox;
+		private StationView station_view;
+		private StationModel station_model;
 
-		private StationsView library_view;
+		public LibraryPage(){
+			station_model = Library.library_model;
+			station_view = new StationView(ref station_model);
 
-		public LibraryBox(){
-			library_view = new StationsView();
-			//library_view.set_stations_from_hash_table(App.library.lib);
+			station_model.null_items.connect(() => {
+				station_view.show_empty_library();
+			});
 
-			ContentBox.add(library_view);
-
-			//App.library.added_radio_station.connect(() => library_view.set_stations_from_hash_table(App.library.lib));
-			//App.library.removed_radio_station.connect(() => library_view.set_stations_from_hash_table(App.library.lib));
-
-			ContentBox.show_all();
+			this.add(station_view);
 		}
 
 		public void show_grid_view(){
-			library_view.show_grid_view();
+			station_view.show_grid_view();
 		}
 
 		public void show_list_view(){
-			library_view.show_list_view();
+			station_view.show_list_view();
 		}
 	}
 }

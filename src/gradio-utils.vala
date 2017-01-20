@@ -91,6 +91,8 @@ public class Util{
 	}
 
 	public static void add_stylesheet (string path) {
+		//TODO: load css correctly!!
+
 		// var css_file = DATA_DIRECTORY + "/" + path;
 		// var provider = new CssProvider ();
 
@@ -103,10 +105,10 @@ public class Util{
 		// }
 		//
 
-		string[] data_dirs = GLib.Environment.get_system_data_dirs();
-		message(data_dirs[0]);
-		message(data_dirs[1]);
-		message(data_dirs[2]);
+		// string[] data_dirs = GLib.Environment.get_system_data_dirs();
+		// message(data_dirs[0]);
+		// message(data_dirs[1]);
+		// message(data_dirs[2]);
 	}
 
 	public static void send_notification(string summary, string body, Gdk.Pixbuf? icon = null){

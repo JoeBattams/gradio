@@ -19,7 +19,7 @@ using Gtk;
 namespace Gradio{
 
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/stations-view.ui")]
-	public class StationsView : Gtk.Box{
+	public class StationView : Gtk.Box{
 
 
 		private bool no_stations = true;
@@ -28,7 +28,7 @@ namespace Gradio{
 		private int results_loaded = 0;
 		private int max_results = 0;
 
-		public StationModel model = new StationModel();
+		public StationModel model;
 
 		[GtkChild]
 		private Box LoadMoreBox;
@@ -49,7 +49,9 @@ namespace Gradio{
 		private FlowBox GridViewFlowBox;
 		private ListBox ListViewListBox;
 
-		public StationsView(){
+		public StationView(ref StationModel m){
+			model = m;
+
 			GridViewFlowBox = new FlowBox();
 			ListViewListBox = new ListBox();
 
