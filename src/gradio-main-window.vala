@@ -78,11 +78,13 @@ namespace Gradio{
 			var app_menu = builder.get_object ("app-menu") as GLib.MenuModel;
 			MenuButton.set_menu_model(app_menu);
 
- 			if(GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome")
+
+			// Hide menu button if desktop = gnome. (else show it)
+ 			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP") == "gnome")
 				MenuButton.set_visible (false);
 			else
 				MenuButton.set_visible (true);
-			message("Desktop session is %s.", GLib.Environment.get_variable("DESKTOP_SESSION"));
+			message("Desktop session is %s.", GLib.Environment.get_variable(" XDG_CURRENT_DESKTOP"));
 
 			setup_tray_icon();
 			setup_view();
