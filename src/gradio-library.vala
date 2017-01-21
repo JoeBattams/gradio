@@ -122,6 +122,7 @@ namespace Gradio{
 				case Sqlite.DONE:
 					break;
 				case Sqlite.ROW:
+					message("Found station: " + stmt.column_text(0));
 					station_provider.add_station_by_id(int.parse(stmt.column_text(0)));
 
 					break;

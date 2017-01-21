@@ -26,11 +26,13 @@ namespace Gradio{
 		private int64 min_id = int64.MAX;
 		private int64 max_id = int64.MIN;
 
+		// no items are available
 		public signal void null_items();
+
+		// items got cleared (ALL ITEMS)
 		public signal void items_cleared();
 
 		public StationModel(){
-
 			// Detect if array is empty
 			this.items_changed.connect(() => {
 				if(stations.length == 0)
@@ -99,10 +101,6 @@ namespace Gradio{
 			stations.insert (insert_pos, station);
 			index.insert(station.ID, insert_pos);
 
-			message("Added station!");
-			message("Index Pos: " + insert_pos.to_string());
-			message("Station ID: " + station.ID.to_string());
-
 			this.items_changed (insert_pos, 0, 1);
 
 	      		if (station.ID > this.max_id)
@@ -147,14 +145,9 @@ namespace Gradio{
 
 
 	  	public bool contains_id (int station_id) {
-	  		if(index[station_id] != 0)
-	  			return true;
-
-	    // 		for (int i = 0; i < stations.length; i ++) {
-	    //   			RadioStation station = stations.get (i);
-	    //   			if (station.ID == station_id)
-					// return true;
-	    // 		}
+			if(index.contains(station_id)){
+				return true;
+			}
 
 	    		return false;
 	  	}

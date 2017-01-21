@@ -72,6 +72,7 @@ namespace Gradio{
 				PlayBox.set_visible(true);
 				IsPlayingImage.set_visible(false);
 			}
+
 			if(App.library.contains_station(station.ID)){
 				RemoveBox.set_visible(true);
 				AddBox.set_visible(false);

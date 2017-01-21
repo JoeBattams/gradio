@@ -115,6 +115,9 @@ namespace Gradio{
 			library_page = new LibraryPage();
 			MainStack.add_titled(library_page, "library_page", "Library");
 
+			// showing library on startup
+			MainStack.set_visible_child_name("library_page");
+
 			VolumeButton.set_relief(ReliefStyle.NORMAL);
 			VolumeButton.set_value(Settings.volume_position);
 

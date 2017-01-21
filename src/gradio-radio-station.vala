@@ -33,7 +33,6 @@ namespace Gradio{
 		public signal void stopped();
 		public signal void played();
 
-		public bool is_in_library = false;
 		public signal void added_to_library();
 		public signal void removed_from_library();
 
@@ -127,8 +126,9 @@ namespace Gradio{
 
 		private void added_to_library_handler(RadioStation s){
 			if(Title != null){
+				message(Title + " added to library");
+
 				if(s.ID == ID){
-					is_in_library = true;
 					added_to_library();
 
 				}
@@ -140,13 +140,11 @@ namespace Gradio{
 		private void removed_from_library_handler(RadioStation s){
 			if(Title != null){
 				if(s.ID == ID){
-					is_in_library = false;
 					removed_from_library();
 				}
 			}else{
 				warning("Catched crash of Gradio.");
 			}
-			message("but i'm here");
 		}
 
 		// Returns the playable url for the station

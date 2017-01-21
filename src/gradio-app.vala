@@ -46,9 +46,9 @@ namespace Gradio {
 			// ignore the vala warning!
 			Settings settings = new Settings();
 
-			player = new AudioPlayer();
+			library = new Library();
 
-		 	library = new Library();
+			player = new AudioPlayer();
 
 			create_app_menu();
 
