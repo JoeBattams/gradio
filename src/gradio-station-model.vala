@@ -27,9 +27,12 @@ namespace Gradio{
 		public signal void cleared();
 
 		public StationModel(){
-
+			// Detect if array is empty
+			this.items_changed.connect(() => {
+				if(stations.length == 0)
+					empty();
+			});
 		}
-
 
   		public GLib.Object? get_item (uint index) {
     			return stations.get ((int)index);
