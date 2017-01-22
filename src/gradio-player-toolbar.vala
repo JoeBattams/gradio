@@ -133,7 +133,7 @@ namespace Gradio{
 
 		[GtkCallback]
 		private void AddRemoveButton_clicked(Button button){
-			if(App.library.contains_station(station.ID))
+			if(App.library.contains_station(station))
 				App.library.remove_radio_station(station);
 			else
 				App.library.add_radio_station(station);
@@ -166,7 +166,7 @@ namespace Gradio{
 		}
 
 		private void refresh_add_remove_button(){
-			if(Gradio.App.library.contains_station(station.ID)){
+			if(Gradio.App.library.contains_station(station)){
 				AddImage.set_visible(false);
 				RemoveImage.set_visible(true);
 			}else{

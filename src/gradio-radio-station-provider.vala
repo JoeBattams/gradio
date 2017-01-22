@@ -90,7 +90,7 @@ namespace Gradio{
 						new_station = new RadioStation.from_json_data(radio_station_data);
 
 						Idle.add(() => {
-							model.add(new_station);
+							model.add_station(new_station);
 							return false;
 						});
 					}else{
@@ -138,7 +138,7 @@ namespace Gradio{
 						var station = new RadioStation.from_json_data(radio_station_data);
 
 						Idle.add(() => {
-							model.add(station);
+							model.add_station(station);
 							return false;
 						});
 					}

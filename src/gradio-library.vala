@@ -43,8 +43,8 @@ namespace Gradio{
 			open_database();
 		}
 
-		public bool contains_station(int id){
-			if(library_model.contains_id(id))
+		public bool contains_station(RadioStation station){
+			if(library_model.contains_station(station))
 				return true;
 			else
 				return false;
@@ -59,7 +59,7 @@ namespace Gradio{
 				critical ("Could not add item to database: %s\n", db_error_message);
 				return false;
 			}else{
-				library_model.add(station);
+				library_model.add_station(station);
 				added_radio_station(station);
 				return true;
 			}
@@ -73,7 +73,7 @@ namespace Gradio{
 				critical ("Could not remove item from database: %s\n", db_error_message);
 				return false;
 			}else{
-				library_model.remove(station);
+				library_model.remove_station(station);
 				removed_radio_station(station);
 				return true;
 			}

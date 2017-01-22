@@ -28,7 +28,7 @@ namespace Gradio{
 			station_model = Library.library_model;
 			station_view = new StationView(ref station_model);
 
-			station_model.null_items.connect(() => {
+			station_model.empty.connect(() => {
 				station_view.show_empty_library();
 			});
 

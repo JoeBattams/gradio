@@ -36,7 +36,7 @@ namespace Gradio{
 			station_view = new StationView(ref station_model);
 			station_provider = new StationProvider(ref station_model);
 
-			station_model.null_items.connect(() => {
+			station_model.empty.connect(() => {
 				station_view.show_no_results();
 			});
 

@@ -83,10 +83,9 @@ namespace Gradio{
       				return item;
 			});
 
-			model.items_cleared.connect(() => {
+			model.cleared.connect(() => {
 				show_loading();
 			});
-
 		}
 
 		private void show_correct_view(){
