@@ -371,9 +371,12 @@
                 </child>
               </object>
               <packing>
-                <property name="name">loading</property>
+                <property name="name">nothing</property>
                 <property name="position">4</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>

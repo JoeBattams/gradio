@@ -111,7 +111,6 @@ namespace Gradio{
 			LoadMoreBox.reparent(GridViewBox);
 		}
 
-
 		public void show_no_results(){
 			StationsStack.set_visible_child_name("no-results");
 		}
@@ -123,7 +122,6 @@ namespace Gradio{
 		public void show_loading(){
 			StationsStack.set_visible_child_name("loading");
 		}
-
 
 		[GtkCallback]
 		private void LoadMoreButton_clicked(Button button){

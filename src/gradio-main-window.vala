@@ -34,8 +34,10 @@ namespace Gradio{
 		private Image GridImage;
 		[GtkChild]
 		private Image ListImage;
+
 		[GtkChild]
 		private Stack MainStack;
+
 		[GtkChild]
 		private Box Bottom;
 		[GtkChild]
@@ -66,6 +68,7 @@ namespace Gradio{
 		SearchPage search_page;
 		LibraryPage library_page;
 
+		private string last_page = "";
 
 		private App app;
 
@@ -234,9 +237,21 @@ namespace Gradio{
 		[GtkCallback]
 		private void SearchButton_toggled (){
 			if(SearchButton.get_active())
-				SearchBar.set_search_mode(true);
+				show_search_page();
 			else
-				SearchBar.set_search_mode(false);
+				hide_search_page();
+		}
+
+		private void show_search_page(){
+			SearchBar.set_search_mode(true);
+			MainStack.set_visible_child_name("search_page");
+			SearchButton.set_active(true);
+		}
+
+		private void hide_search_page(){
+			MainStack.set_visible_child_name("library_page");
+			SearchBar.set_search_mode(false);
+			SearchButton.set_active(false);
 		}
 
 		[GtkCallback]
@@ -260,11 +275,9 @@ namespace Gradio{
 			// Toggle Search
 			if ((event.keyval == Gdk.Key.f) && (event.state & default_modifiers) == Gdk.ModifierType.CONTROL_MASK) {
 				if(SearchBar.get_search_mode()){
-					SearchBar.set_search_mode(false);
-					SearchButton.set_active(false);
+					hide_search_page();
 				}else{
-					SearchBar.set_search_mode(true);
-					SearchButton.set_active(true);
+					show_search_page();
 				}
 			}
 

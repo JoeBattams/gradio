@@ -28,14 +28,14 @@ namespace Gradio{
 			station_model = Library.library_model;
 			station_view = new StationView(ref station_model);
 
-			if(station_model.get_n_items() == 0)
-				station_view.show_empty_library();
+			connect_signals();
+			this.add(station_view);
+		}
 
+		private void connect_signals(){
 			station_model.empty.connect(() => {
 				station_view.show_empty_library();
 			});
-
-			this.add(station_view);
 		}
 
 		public void show_grid_view(){

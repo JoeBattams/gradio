@@ -36,26 +36,20 @@ namespace Gradio{
 			station_view = new StationView(ref station_model);
 			station_provider = new StationProvider(ref station_model);
 
+			connect_signals();
+			this.add(station_view);
+		}
+
+		private void connect_signals(){
 			station_model.empty.connect(() => {
 				station_view.show_no_results();
 			});
-
-			this.add(station_view);
 		}
 
 		public void search(string txt){
 			search_text = txt;
 			reset_timeout();
 		}
-
-		public void show_grid_view(){
-			station_view.show_grid_view();
-		}
-
-		public void show_list_view(){
-			station_view.show_list_view();
-		}
-
 
 		private void reset_timeout(){
 			if(delayed_changed_id > 0)
@@ -72,6 +66,14 @@ namespace Gradio{
 			delayed_changed_id = 0;
 
 			return false;
+		}
+
+		public void show_grid_view(){
+			station_view.show_grid_view();
+		}
+
+		public void show_list_view(){
+			station_view.show_list_view();
 		}
 	}
 }
