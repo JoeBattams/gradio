@@ -22,6 +22,8 @@ namespace Gradio{
 	public class ListItem : Gtk.Box{
 
 		[GtkChild]
+		private Label StationDescription;
+		[GtkChild]
 		private Label ChannelNameLabel;
 		[GtkChild]
 		private Label ChannelTagsLabel;
@@ -64,6 +66,15 @@ namespace Gradio{
 			// Load basic information
 			set_logo();
 			LikesLabel.set_text(station.Votes.to_string());
+
+			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
+				string desc = AdditionalDataProvider.get_description.end(res);
+
+				if(desc == "")
+					StationDescription.set_text("No description found");
+				else
+					StationDescription.set_text(desc);
+			});
 
 			ChannelNameLabel.set_text(station.Title);
 			ChannelTagsLabel.set_text(station.Tags);

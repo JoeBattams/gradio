@@ -23,6 +23,7 @@ cc = meson.get_compiler('c')
 deps_gradio += cc.find_library('m', required: false)
 
 src_gradio = ['gradio-app.vala',
+	      'gradio-additional-data-provider.vala',
 	      'gradio-page.vala',
 	      'gradio-audio-player.vala',
 	      'gradio-category-item-provider.vala',
