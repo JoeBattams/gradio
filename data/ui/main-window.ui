@@ -2,6 +2,13 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
+  <object class="GtkToggleButton" id="DiscoverToggleButton">
+    <property name="label" translatable="yes">Discover</property>
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <signal name="toggled" handler="DiscoverToggleButton_toggled" swapped="no"/>
+  </object>
   <template class="GradioMainWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Gradio</property>
@@ -38,7 +45,7 @@
           <object class="GtkStack" id="MainStack">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="transition_type">crossfade</property>
+            <property name="transition_type">slide-left</property>
             <child>
               <object class="GtkBox" id="NoConnectionBox">
                 <property name="visible">True</property>
@@ -152,12 +159,61 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="show_close_button">True</property>
+        <child>
+          <object class="GtkButton" id="BackButton">
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="no_show_all">True</property>
+            <signal name="clicked" handler="BackButton_clicked" swapped="no"/>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">go-previous-symbolic</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
         <child type="title">
-          <object class="GtkStackSwitcher" id="StackSwitcher">
+          <object class="GtkBox">
+            <property name="width_request">250</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="stack">MainStack</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="LibraryButton">
+                <property name="label" translatable="yes">Library</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="LibraryButton_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="DiscoverButton">
+                <property name="label" translatable="yes">Discover</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="DiscoverButton_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <style>
+              <class name="linked"/>
+            </style>
           </object>
         </child>
         <child>
@@ -213,24 +269,6 @@ audio-volume-medium-symbolic</property>
           <packing>
             <property name="pack_type">end</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="MiniPlayerButton">
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="no_show_all">True</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">view-restore-symbolic</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -305,4 +343,11 @@ audio-volume-medium-symbolic</property>
       </object>
     </child>
   </template>
+  <object class="GtkToggleButton" id="LibraryToggleButton">
+    <property name="label" translatable="yes">Library</property>
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <signal name="toggled" handler="LibraryToggleButton_toggled" swapped="no"/>
+  </object>
 </interface>

@@ -14,48 +14,23 @@
  * along with Gradio.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-//
-// This class is WIP.
-//
-
 using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/mini-player.ui")]
-	public class MiniPlayer : Gtk.Box{
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/discover-page.ui")]
+	public class DiscoverPage : Gtk.Box, Page{
 
-		[GtkChild]
-		private Image PlayImage;
-		[GtkChild]
-		private Image StopImage;
-
-		[GtkChild]
-		private Label ChannelNameLabel;
-		[GtkChild]
-		private Label ChannelCurrentTitleLabel;
-
-		[GtkChild]
-		private Image StationLogo;
-
-		[GtkChild]
-		private Image AddImage;
-		[GtkChild]
-		private Image RemoveImage;
-
-		[GtkChild]
-		private Label LikesLabel;
-
-		[GtkChild]
-		private VolumeButton VolumeButton;
-
-		RadioStation station;
-
-		public MiniPlayer(){
-
+		public DiscoverPage(){
 
 		}
 
+		public void show_grid_view(){
+			//station_view.show_grid_view();
+		}
+
+		public void show_list_view(){
+			//station_view.show_list_view();
+		}
 	}
 }

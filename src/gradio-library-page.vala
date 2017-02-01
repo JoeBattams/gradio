@@ -24,12 +24,15 @@ namespace Gradio{
 		private StationView station_view;
 		private StationModel station_model;
 
+		[GtkChild]
+		private Box StationBox;
+
 		public LibraryPage(){
 			station_model = Library.library_model;
 			station_view = new StationView(ref station_model);
 
 			connect_signals();
-			this.add(station_view);
+			StationBox.add(station_view);
 		}
 
 		private void connect_signals(){

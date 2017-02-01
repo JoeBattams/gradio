@@ -43,13 +43,11 @@ namespace Gradio{
 		[GtkChild]
 		private MenuButton MenuButton;
 		[GtkChild]
-		private StackSwitcher StackSwitcher;
-		[GtkChild]
-		private ToggleButton MiniPlayerButton;
-		[GtkChild]
 		private Button GridListButton;
 		[GtkChild]
 		private VolumeButton VolumeButton;
+		[GtkChild]
+		private Button BackButton;
 
 		private int height;
 		private int width;
@@ -57,18 +55,33 @@ namespace Gradio{
 		private int pos_x;
 		private int pos_y;
 
-		PlayerToolbar player_toolbar;
-		DiscoverBox discover_box;
-
 		private StatusIcon trayicon;
-
 		public signal void toggle_view();
 		public signal void tray_activate();
 
+		PlayerToolbar player_toolbar;
+
+		DiscoverPage discover_page;
 		SearchPage search_page;
 		LibraryPage library_page;
+		StationDetailPage station_detail_page;
 
-		private string last_page = "";
+		private GradioMode current_page;
+
+		Queue<GradioMode> back_entry_stack = new Queue<GradioMode>();
+
+		public enum GradioMode {
+			MODE_UNKNOWN,
+			MODE_LIBRARY,
+			MODE_DISCOVER,
+			MODE_SEARCH,
+			MODE_DETAILS,
+			MODE_LOADING,
+			MODE_CATEGORY,
+			MODE_EDIT,
+			MODE_EXTRAS,
+			MODE_LAST
+		}
 
 		private App app;
 
@@ -115,11 +128,17 @@ namespace Gradio{
 			search_page = new SearchPage();
 			MainStack.add_named(search_page, "search_page");
 
+			station_detail_page = new StationDetailPage();
+			MainStack.add_named(station_detail_page, "station_detail_page");
+
 			library_page = new LibraryPage();
 			MainStack.add_titled(library_page, "library_page", "Library");
 
+			discover_page = new DiscoverPage();
+			MainStack.add_titled(discover_page, "discover_page", "Discover");
+
 			// showing library on startup
-			MainStack.set_visible_child_name("library_page");
+			set_page(GradioMode.MODE_LIBRARY);
 
 			VolumeButton.set_relief(ReliefStyle.NORMAL);
 			VolumeButton.set_value(Settings.volume_position);
@@ -133,9 +152,6 @@ namespace Gradio{
 
 	        	player_toolbar = new PlayerToolbar();
 	       		player_toolbar.set_visible(false);
-	      		discover_box = new DiscoverBox();
-
-	        	MainStack.add_titled(discover_box, "discover_box", "Discover");
 
 			//Load css
 			Util.add_stylesheet("gradio.css");
@@ -143,7 +159,6 @@ namespace Gradio{
 			if(!(Settings.use_grid_view)){
 				GridImage.set_visible(true);
 				ListImage.set_visible(false);
-				discover_box.show_list_view();
 				Settings.use_grid_view = false;
 			}else{
 				GridImage.set_visible(false);
@@ -160,20 +175,8 @@ namespace Gradio{
 			});
 		}
 
-		public void show_mini_player(){
-			StackSwitcher.set_visible(false);
-			GridListButton.set_visible(false);
-
-			this.set_size_request (10,10);
-			this.resize(10,10);
-			this.set_resizable(false);
-			MainStack.set_visible_child_name("miniplayer");
-		}
-
 		public void show_no_connection_message (){
 			VolumeButton.set_visible(false);
-			MiniPlayerButton.set_visible(false);
-			StackSwitcher.set_visible(false);
 			GridListButton.set_visible(false);
 			MainStack.set_visible_child_name("no_connection");
 		}
@@ -199,13 +202,101 @@ namespace Gradio{
 			pos_y = Settings.window_position_y;
 		}
 
+		public void set_page(GradioMode mode, bool writehistory = true){
+			if(mode != current_page){
+
+				// show or hide the search bar
+				if(mode == GradioMode.MODE_SEARCH){
+					SearchBar.set_search_mode(true);
+					SearchButton.set_active(true);
+				}else{
+					SearchBar.set_search_mode(false);
+					SearchButton.set_active(false);
+				}
+
+
+				// Hide Back button and if discover or library -> erase the history
+				if(mode != GradioMode.MODE_LIBRARY && mode != GradioMode.MODE_DISCOVER){
+					BackButton.set_visible(true);
+				}else{
+					BackButton.set_visible(false);
+					back_entry_stack.clear();
+					message("History is nulled");
+				}
+
+
+				// push the old page into the history :)
+				if(writehistory)
+					back_entry_stack.push_tail(current_page);
+				else
+					back_entry_stack.pop_tail();
+
+
+				// actual switching here ->
+				switch(mode){
+					case GradioMode.MODE_SEARCH:{
+						MainStack.set_visible_child_name("search_page");
+						current_page = GradioMode.MODE_SEARCH;
+						break;
+					};
+					case GradioMode.MODE_DISCOVER: {
+						MainStack.set_visible_child_name("discover_page");
+						current_page = GradioMode.MODE_DISCOVER;
+						break;
+					};
+					case GradioMode.MODE_LIBRARY: {
+						MainStack.set_visible_child_name("library_page");
+						current_page = GradioMode.MODE_LIBRARY;
+						break;
+					};
+					case GradioMode.MODE_DETAILS: {
+						MainStack.set_visible_child_name("station_detail_page");
+						current_page = GradioMode.MODE_DETAILS;
+						break;
+					};
+				}
+			}
+		}
+
+		private void show_previous_page(){
+			switch(back_entry_stack.peek_tail()){
+				case GradioMode.MODE_SEARCH: set_page(GradioMode.MODE_SEARCH, false); break;
+				case GradioMode.MODE_LIBRARY: set_page(GradioMode.MODE_LIBRARY, false); break;
+				case GradioMode.MODE_DISCOVER: set_page(GradioMode.MODE_DISCOVER, false); break;
+				case GradioMode.MODE_DETAILS: set_page(GradioMode.MODE_DETAILS, false); break;
+			}
+		}
+
+		[GtkCallback]
+		private void SearchButton_toggled (){
+			if(SearchButton.get_active())
+				SearchBar.set_search_mode(true);
+			else
+				SearchBar.set_search_mode(false);
+		}
+
+		[GtkCallback]
+		public void LibraryButton_clicked (Gtk.Button button) {
+			set_page(GradioMode.MODE_LIBRARY);
+		}
+
+		[GtkCallback]
+		public void DiscoverButton_clicked (Gtk.Button button) {
+			set_page(GradioMode.MODE_DISCOVER);
+		}
+
+		[GtkCallback]
+		public void BackButton_clicked (Gtk.Button button) {
+			show_previous_page();
+		}
+
 		[GtkCallback]
 		private void SearchEntry_search_changed(){
 			string search_term = SearchEntry.get_text();
 
 			if(search_term != "" && search_term.length >= 3){
 				search_page.search(SearchEntry.get_text());
-				MainStack.set_visible_child_name("search_page");
+				set_page(GradioMode.MODE_SEARCH);
 			}
 		}
 
@@ -235,26 +326,6 @@ namespace Gradio{
 		}
 
 		[GtkCallback]
-		private void SearchButton_toggled (){
-			if(SearchButton.get_active())
-				show_search_page();
-			else
-				hide_search_page();
-		}
-
-		private void show_search_page(){
-			SearchBar.set_search_mode(true);
-			MainStack.set_visible_child_name("search_page");
-			SearchButton.set_active(true);
-		}
-
-		private void hide_search_page(){
-			MainStack.set_visible_child_name("library_page");
-			SearchBar.set_search_mode(false);
-			SearchButton.set_active(false);
-		}
-
-		[GtkCallback]
 		public bool on_key_pressed (Gdk.EventKey event) {
 		var default_modifiers = Gtk.accelerator_get_default_mod_mask ();
 
@@ -275,16 +346,17 @@ namespace Gradio{
 			// Toggle Search
 			if ((event.keyval == Gdk.Key.f) && (event.state & default_modifiers) == Gdk.ModifierType.CONTROL_MASK) {
 				if(SearchBar.get_search_mode()){
-					hide_search_page();
+					show_previous_page();
+					SearchButton.set_active(false);
 				}else{
-					show_search_page();
+					SearchBar.set_search_mode(true);
+					SearchButton.set_active(true);
 				}
 			}
 
 
 			return false;
 		}
-
 
 	}
 }

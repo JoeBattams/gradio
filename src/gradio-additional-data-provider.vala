@@ -50,7 +50,7 @@ namespace Gradio{
 			// take the root if no description found. http://bla.org/da/da/da/da -> http://bla.org
 			if(start_index == -1 && station.Homepage != null && station.Homepage != ""){
 				string url = station.Homepage;
-				message("Before: %s", url);
+				//message("Before: %s", url);
 
 				bool finished = false;
 
@@ -65,7 +65,7 @@ namespace Gradio{
 					}
 				}
 
-				message("After: %s", url);
+				//message("After: %s", url);
 				station.Homepage = url;
 
 				// process the new address
@@ -115,11 +115,11 @@ namespace Gradio{
 					descr = desc1.slice(0,end_index);
 				}
 			}
-			message(">> %s", station.Title);
-			message("Homepage: %s", station.Homepage);
-			message("HTML Lenght: %i", html_length);
-			message("Start index: %i", start_index);
-			message("End index: %i", end_index);
+			//message(">> %s", station.Title);
+			//message("Homepage: %s", station.Homepage);
+			//message("HTML Lenght: %i", html_length);
+			//message("Start index: %i", start_index);
+			//message("End index: %i", end_index);
 
 			return descr;
 		}

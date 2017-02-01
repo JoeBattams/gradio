@@ -18,5 +18,7 @@
     <file>ui/app-menu.ui</file>
     <file>ui/search-page.ui</file>
     <file>ui/library-page.ui</file>
+    <file>ui/discover-page.ui</file>
+    <file>ui/station-detail-page.ui</file>
   </gresource>
 </gresources>

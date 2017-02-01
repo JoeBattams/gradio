@@ -18,20 +18,19 @@ using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/stations-view-button.ui")]
-	public class StationsViewButton : Gtk.Box{
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/station-detail-page.ui")]
+	public class StationDetailPage : Gtk.Box, Page{
 
-		public signal void clicked();
-
-		public StationsViewButton(){
+		public StationDetailPage(){
 
 		}
 
-		[GtkCallback]
-		private void click (Button button){
-			clicked();
+		public void show_grid_view(){
+			//station_view.show_grid_view();
 		}
 
+		public void show_list_view(){
+			//station_view.show_list_view();
+		}
 	}
 }
-

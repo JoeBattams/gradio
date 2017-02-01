@@ -83,6 +83,12 @@ namespace Gradio{
       				return item;
 			});
 
+
+			//TODO: split
+			ListViewListBox.row_activated.connect((t,a) => {
+				Gradio.App.window.set_page(Gradio.App.window.GradioMode.MODE_DETAILS);
+			});
+
 			model.cleared.connect(() => {
 				show_loading();
 			});

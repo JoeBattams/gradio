@@ -19,7 +19,7 @@ using Gtk;
 namespace Gradio{
 
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/list-item.ui")]
-	public class ListItem : Gtk.Box{
+	public class ListItem : Gtk.ListBoxRow{
 
 		[GtkChild]
 		private Label StationDescription;
@@ -137,13 +137,6 @@ namespace Gradio{
 			}
 		}
 
-
-		// [GtkCallback]
-		// private bool GradioListItem_clicked(Gdk.EventButton b){
-		// 	App.player.set_radio_station(station);
-
-		// 	return false;
-		// }
 	}
 
 }
