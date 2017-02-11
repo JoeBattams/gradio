@@ -1,24 +1,19 @@
 <gresources>
   <gresource prefix="/de/haecker-felix/gradio">
-    <file>ui/station-editor-dialog.ui</file>
-    <file>ui/main-window.ui</file>
-    <file>ui/settings-dialog.ui</file>
-    <file>ui/discover-box.ui</file>
-    <file>ui/library-box.ui</file>
-    <file>ui/player-toolbar.ui</file>
-    <file>ui/list-item.ui</file>
-    <file>ui/grid-item.ui</file>
-    <file>ui/discover-sidebar.ui</file>
-    <file>ui/categories-row.ui</file>
-    <file>ui/stations-view.ui</file>
-    <file>ui/stations-view-button.ui</file>
-    <file>ui/sidebar-tile.ui</file>
-    <file>ui/mini-player.ui</file>
-    <file>ui/status-label.ui</file>
-    <file>ui/app-menu.ui</file>
-    <file>ui/search-page.ui</file>
-    <file>ui/library-page.ui</file>
-    <file>ui/discover-page.ui</file>
-    <file>ui/station-detail-page.ui</file>
+	<file>ui/item/small-tile-item.ui</file>
+	<file>ui/item/row-item.ui</file>
+	<file>ui/item/big-tile-item.ui</file>
+	<file>ui/view/small-tile-view.ui</file>
+	<file>ui/view/row-view.ui</file>
+	<file>ui/view/big-tile-view.ui</file>
+	<file>ui/page/discover-page.ui</file>
+	<file>ui/page/library-page.ui</file>
+	<file>ui/page/search-page.ui</file>
+	<file>ui/page/station-detail-page.ui</file>
+	<file>ui/app-menu.ui</file>
+	<file>ui/main-window.ui</file>
+	<file>ui/player-toolbar.ui</file>
+	<file>ui/settings-dialog.ui</file>
+	<file>ui/status-label.ui</file>
   </gresource>
 </gresources>

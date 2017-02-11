@@ -308,21 +308,7 @@ namespace Gradio{
 
 		[GtkCallback]
 		private void GridListButton_clicked(Gtk.Button button){
-			if(ListImage.get_visible()){
-				GridImage.set_visible(true);
-				ListImage.set_visible(false);
-				Settings.use_grid_view = false;
 
-				library_page.show_list_view();
-				search_page.show_list_view();
-			}else{
-				GridImage.set_visible(false);
-				ListImage.set_visible(true);
-				Settings.use_grid_view = true;
-
-				library_page.show_grid_view();
-				search_page.show_grid_view();
-			}
 		}
 
 		[GtkCallback]

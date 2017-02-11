@@ -17,36 +17,8 @@
 using Gtk;
 
 namespace Gradio{
+	public interface Page{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/library-page.ui")]
-	public class LibraryPage : Gtk.Box, Page{
 
-		private StationView station_view;
-		private StationModel station_model;
-
-		[GtkChild]
-		private Box StationBox;
-
-		public LibraryPage(){
-			station_model = Library.library_model;
-			station_view = new StationView(ref station_model);
-
-			connect_signals();
-			StationBox.add(station_view);
-		}
-
-		private void connect_signals(){
-			station_model.empty.connect(() => {
-				station_view.show_empty_library();
-			});
-		}
-
-		public void show_grid_view(){
-			station_view.show_grid_view();
-		}
-
-		public void show_list_view(){
-			station_view.show_list_view();
-		}
 	}
 }

@@ -17,9 +17,13 @@
 using Gtk;
 
 namespace Gradio{
-	public interface Page{
-		public abstract void show_grid_view();
-		public abstract void show_list_view();
+
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/view/small-tile-view.ui")]
+	public class SmallTileView : Gtk.Box, View{
+
+		public SmallTileView(ref StationModel m){
+
+		}
 
 	}
 }

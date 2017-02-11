@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
-  <template class="GradioListItem" parent="GtkListBoxRow">
+  <template class="GradioRow" parent="GtkListBoxRow">
     <property name="width_request">800</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -32,6 +32,9 @@
                 </style>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -392,8 +395,6 @@
           </object>
         </child>
       </object>
-      <packing>
-      </packing>
     </child>
   </template>
 </interface>

@@ -14,23 +14,8 @@
  * along with Gradio.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gtk;
-
 namespace Gradio{
+	public interface View{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/station-detail-page.ui")]
-	public class StationDetailPage : Gtk.Box, Page{
-
-		public StationDetailPage(){
-
-		}
-
-		public void show_grid_view(){
-			//station_view.show_grid_view();
-		}
-
-		public void show_list_view(){
-			//station_view.show_list_view();
-		}
 	}
 }

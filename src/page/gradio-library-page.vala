@@ -18,19 +18,27 @@ using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/discover-page.ui")]
-	public class DiscoverPage : Gtk.Box, Page{
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/page/library-page.ui")]
+	public class LibraryPage : Gtk.Box, Page{
 
-		public DiscoverPage(){
+		private RowView station_view;
+		private StationModel station_model;
 
+		[GtkChild]
+		private Box StationBox;
+
+		public LibraryPage(){
+			station_model = Library.library_model;
+			station_view = new RowView(ref station_model);
+
+			connect_signals();
+			StationBox.add(station_view);
 		}
 
-		public void show_grid_view(){
-			//station_view.show_grid_view();
-		}
-
-		public void show_list_view(){
-			//station_view.show_list_view();
+		private void connect_signals(){
+			//station_model.empty.connect(() => {
+			//	station_view.show_empty_library();
+			//});
 		}
 	}
 }

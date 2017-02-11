@@ -18,8 +18,8 @@ using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/list-item.ui")]
-	public class ListItem : Gtk.ListBoxRow{
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/item/row-item.ui")]
+	public class Row : Gtk.ListBoxRow, Item{
 
 		[GtkChild]
 		private Label StationDescription;
@@ -43,7 +43,7 @@ namespace Gradio{
 
 		public RadioStation station;
 
-		public ListItem(RadioStation s){
+		public Row(RadioStation s){
 			station = s;
 			connect_signals();
 

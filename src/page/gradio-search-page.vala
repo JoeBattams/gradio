@@ -18,10 +18,13 @@ using Gtk;
 
 namespace Gradio{
 
-	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/search-page.ui")]
+	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/page/search-page.ui")]
 	public class SearchPage : Gtk.Box, Page{
 
-		private StationView station_view;
+		[GtkChild]
+		Viewport ScrollViewport;
+
+		private RowView row_view;
 		private StationModel station_model;
 		private StationProvider station_provider;
 
@@ -33,17 +36,15 @@ namespace Gradio{
 
 		public SearchPage(){
 			station_model =  new StationModel();
-			station_view = new StationView(ref station_model);
+			row_view = new RowView(ref station_model);
 			station_provider = new StationProvider(ref station_model);
 
 			connect_signals();
-			this.add(station_view);
+			ScrollViewport.add(row_view);
 		}
 
 		private void connect_signals(){
-			station_model.empty.connect(() => {
-				station_view.show_no_results();
-			});
+
 		}
 
 		public void search(string txt){
@@ -66,14 +67,6 @@ namespace Gradio{
 			delayed_changed_id = 0;
 
 			return false;
-		}
-
-		public void show_grid_view(){
-			station_view.show_grid_view();
-		}
-
-		public void show_list_view(){
-			station_view.show_list_view();
 		}
 	}
 }
