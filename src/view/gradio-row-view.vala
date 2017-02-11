@@ -26,7 +26,24 @@ namespace Gradio{
 		public RowView(ref StationModel m){
 			model = m;
 
+			this.set_header_func(header_func);
+
 			connect_signals();
+		}
+
+		private void header_func(ListBoxRow row, ListBoxRow? row_before){
+			if(row_before == null){
+				row.set_header(null);
+				return;
+			}
+
+			Gtk.Widget current = row.get_header();
+
+			if(current == null){
+				current = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+				current.show();
+				row.set_header(current);
+			}
 		}
 
 		private void connect_signals(){
