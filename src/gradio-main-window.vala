@@ -29,12 +29,6 @@ namespace Gradio{
 		[GtkChild]
 		private ToggleButton SearchButton;
 
-
-		[GtkChild]
-		private Image GridImage;
-		[GtkChild]
-		private Image ListImage;
-
 		[GtkChild]
 		private Stack MainStack;
 
@@ -43,11 +37,14 @@ namespace Gradio{
 		[GtkChild]
 		private MenuButton MenuButton;
 		[GtkChild]
-		private Button GridListButton;
-		[GtkChild]
 		private VolumeButton VolumeButton;
 		[GtkChild]
 		private Button BackButton;
+
+		[GtkChild]
+		private ToggleButton DiscoverToggleButton;
+		[GtkChild]
+		private ToggleButton LibraryToggleButton;
 
 		private int height;
 		private int width;
@@ -156,15 +153,6 @@ namespace Gradio{
 			//Load css
 			Util.add_stylesheet("gradio.css");
 
-			if(!(Settings.use_grid_view)){
-				GridImage.set_visible(true);
-				ListImage.set_visible(false);
-				Settings.use_grid_view = false;
-			}else{
-				GridImage.set_visible(false);
-				ListImage.set_visible(true);
-				Settings.use_grid_view = true;
-			}
 	       		Bottom.pack_end(player_toolbar);
 		}
 
@@ -177,7 +165,6 @@ namespace Gradio{
 
 		public void show_no_connection_message (){
 			VolumeButton.set_visible(false);
-			GridListButton.set_visible(false);
 			MainStack.set_visible_child_name("no_connection");
 		}
 
@@ -204,6 +191,18 @@ namespace Gradio{
 
 		public void set_page(GradioMode mode, bool writehistory = true){
 			if(mode != current_page){
+
+				// set correct page switcher button
+				if(mode == GradioMode.MODE_DISCOVER){
+					DiscoverToggleButton.set_active(true);
+					LibraryToggleButton.set_active(false);
+				}else if(mode == GradioMode.MODE_LIBRARY){
+					DiscoverToggleButton.set_active(false);
+					LibraryToggleButton.set_active(true);
+				}else{
+					DiscoverToggleButton.set_active(false);
+					LibraryToggleButton.set_active(false);
+				}
 
 				// show or hide the search bar
 				if(mode == GradioMode.MODE_SEARCH){
@@ -276,13 +275,13 @@ namespace Gradio{
 		}
 
 		[GtkCallback]
-		public void LibraryButton_clicked (Gtk.Button button) {
-			set_page(GradioMode.MODE_LIBRARY);
+		private void DiscoverToggleButton_toggled (){
+			set_page(GradioMode.MODE_DISCOVER);
 		}
 
 		[GtkCallback]
-		public void DiscoverButton_clicked (Gtk.Button button) {
-			set_page(GradioMode.MODE_DISCOVER);
+		private void LibraryToggleButton_toggled (){
+			set_page(GradioMode.MODE_LIBRARY);
 		}
 
 		[GtkCallback]
@@ -304,11 +303,6 @@ namespace Gradio{
         	private void VolumeButton_value_changed (double value) {
 			App.player.set_volume(value);
 			Settings.volume_position = value;
-		}
-
-		[GtkCallback]
-		private void GridListButton_clicked(Gtk.Button button){
-
 		}
 
 		[GtkCallback]
