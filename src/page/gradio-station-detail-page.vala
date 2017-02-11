@@ -21,16 +21,104 @@ namespace Gradio{
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/page/station-detail-page.ui")]
 	public class StationDetailPage : Gtk.Box, Page{
 
+		[GtkChild]
+		private Label StationTitleLabel;
+
+		[GtkChild]
+		private Box RemoveBox;
+		[GtkChild]
+		private Box AddBox;
+
+		[GtkChild]
+		private Box PlayBox;
+		[GtkChild]
+		private Box StopBox;
+
+		[GtkChild]
+		private Label LikesLabel;
+
+		private RadioStation station;
+
 		public StationDetailPage(){
-
+			connect_signals();
 		}
 
-		public void show_grid_view(){
-			//station_view.show_grid_view();
+		private void connect_signals(){
+			station.played.connect(() => {
+				StopBox.set_visible(true);
+				PlayBox.set_visible(false);
+			});
+
+			station.stopped.connect(() => {
+				StopBox.set_visible(false);
+				PlayBox.set_visible(true);
+			});
+
+			station.added_to_library.connect(() => {
+				AddBox.set_visible(false);
+				RemoveBox.set_visible(true);
+			});
+
+			station.removed_from_library.connect(() => {
+				AddBox.set_visible(true);
+				RemoveBox.set_visible(false);
+			});
 		}
 
-		public void show_list_view(){
-			//station_view.show_list_view();
+		public void set_station(RadioStation s){
+			station = s;
+
+			reset_view();
+			set_data();
+		}
+
+		private void set_data(){
+			StationTitleLabel.set_text(station.Title);
+
+			// Play / Stop Button
+			if(App.player.is_playing_station(station)){
+				StopBox.set_visible(true);
+				PlayBox.set_visible(false);
+			}else{
+				StopBox.set_visible(false);
+				PlayBox.set_visible(true);
+			}
+
+			// Add / Remove Button
+			if(App.library.contains_station(station)){
+				RemoveBox.set_visible(true);
+				AddBox.set_visible(false);
+			}else{
+				RemoveBox.set_visible(false);
+				AddBox.set_visible(true);
+			}
+		}
+
+		private void reset_view(){
+			StationTitleLabel.set_text("");
+		}
+
+		[GtkCallback]
+		private void LikeButton_clicked(Button b){
+			station.vote();
+			LikesLabel.set_text(station.Votes.to_string());
+		}
+
+		[GtkCallback]
+        	private void PlayStopButton_clicked (Button button) {
+			if(App.player.current_station != null && App.player.current_station.ID == station.ID)
+				App.player.toggle_play_stop();
+			else
+				App.player.set_radio_station(station);
+		}
+
+		[GtkCallback]
+		private void AddRemoveButton_clicked(Button button){
+			if(App.library.contains_station(station)){
+				App.library.remove_radio_station(station);
+			}else{
+				App.library.add_radio_station(station);
+			}
 		}
 	}
 }

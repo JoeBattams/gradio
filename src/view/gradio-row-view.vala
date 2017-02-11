@@ -40,8 +40,10 @@ namespace Gradio{
 			});
 
 			this.row_activated.connect((t,a) => {
-				Gradio.App.window.set_page(Gradio.App.window.GradioMode.MODE_DETAILS);
+				Row row = (Row)a;
+				Gradio.App.window.show_station_detail_page(row.station);
 			});
+
 		}
 	}
 }

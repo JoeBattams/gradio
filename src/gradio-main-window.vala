@@ -266,6 +266,11 @@ namespace Gradio{
 			}
 		}
 
+		public void show_station_detail_page(RadioStation station){
+			station_detail_page.set_station(station);
+			set_page(GradioMode.MODE_DETAILS);
+		}
+
 		[GtkCallback]
 		private void SearchButton_toggled (){
 			if(SearchButton.get_active())
