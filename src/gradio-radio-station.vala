@@ -152,39 +152,36 @@ namespace Gradio{
 			SourceFunc callback = get_stream_address.callback;
 			string url = "";
 
-			ThreadFunc<void*> run = () => {
-				string tmp = "";
-				try{
-					Json.Parser parser = new Json.Parser ();
+			string data = "";
 
-					Util.get_string_from_uri.begin(RadioBrowser.radio_station_stream_url + ID, (obj, res) => {
-						string data = Util.get_string_from_uri.end(res);
-						parser.load_from_data (data);
-						var root = parser.get_root ();
+			Util.get_string_from_uri.begin(RadioBrowser.radio_station_stream_url + ID, (obj, res) => {
+				string result = Util.get_string_from_uri.end(res);
 
-						if(root != null){
-							var radio_station_data = root.get_object ();
-							if(radio_station_data.get_string_member("ok") ==  "true"){
-								tmp = radio_station_data.get_string_member("url");
-							}
-						}
-		       			});
-
-				}catch(GLib.Error e){
-					warning(e.message);
-				}
-
-				url = tmp;
-
+				if(result != null)
+					data = result;
 				Idle.add((owned) callback);
-				Thread.exit (1.to_pointer ());
-				return null;
-			};
-
-			new Thread<void*> ("get_url_thread", run);
+			});
 
 			yield;
 
+			try{
+				Json.Parser parser = new Json.Parser ();
+
+				parser.load_from_data (data);
+				var root = parser.get_root ();
+				if(root != null){
+					var radio_station_data = root.get_object ();
+					if(radio_station_data.get_string_member("ok") ==  "true"){
+						url = radio_station_data.get_string_member("url");
+					}
+				}
+
+
+			}catch(GLib.Error e){
+				warning(e.message);
+			}
+
+			message("returning: " + url);
 			return url;
 		}
 
