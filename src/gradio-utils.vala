@@ -93,22 +93,34 @@ public class Util{
 	public static void add_stylesheet (string path) {
 		//TODO: load css correctly!!
 
-		// var css_file = DATA_DIRECTORY + "/" + path;
-		// var provider = new CssProvider ();
+		string[] data_dirs = GLib.Environment.get_system_data_dirs();
+		string css_file = "";
 
-		// try {
-		// 	provider.load_from_path (css_file);
-		// 	StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-		// 	message ("Loaded CSS from: %s", css_file);
-		// } catch (Error e) {
-		// 	error ("Error with stylesheet: %s", e.message);
-		// }
-		//
+		for(int i = 0; data_dirs[i] != null;i++){
+			string test = data_dirs[i] + "gradio/" + path;
 
-		// string[] data_dirs = GLib.Environment.get_system_data_dirs();
-		// message(data_dirs[0]);
-		// message(data_dirs[1]);
-		// message(data_dirs[2]);
+			var file = File.new_for_path (test);
+
+    			if (file.query_exists ()) {
+        			css_file = test;
+    			}
+		}
+
+		if(css_file != ""){
+			var provider = new CssProvider ();
+
+			try {
+				provider.load_from_path (css_file);
+				StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+				message ("Loaded CSS from: %s", css_file);
+			} catch (Error e) {
+				error ("Error with stylesheet: %s", e.message);
+			}
+		}else{
+			critical("No valid css file found!");
+		}
+
+
 	}
 
 	public static void send_notification(string summary, string body, Gdk.Pixbuf? icon = null){
