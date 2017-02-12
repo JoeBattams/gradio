@@ -24,7 +24,12 @@ namespace Gradio{
 		[GtkChild]
 		private Label StationTitleLabel;
 		[GtkChild]
-		private Box StationTags;
+		private Label StationLocationLabel;
+		[GtkChild]
+		private Box StationTagsBox;
+		[GtkChild]
+		private Label StationDescriptionLabel;
+
 		private TagBox tbox;
 
 		[GtkChild]
@@ -36,6 +41,9 @@ namespace Gradio{
 		private Box PlayBox;
 		[GtkChild]
 		private Box StopBox;
+
+		[GtkChild]
+		private Box StationDescriptionBox;
 
 		[GtkChild]
 		private Label LikesLabel;
@@ -71,7 +79,7 @@ namespace Gradio{
 
 		private void setup_view(){
 			tbox = new TagBox();
-			StationTags.add(tbox);
+			StationTagsBox.add(tbox);
 		}
 
 		public void set_station(RadioStation s){
@@ -102,10 +110,28 @@ namespace Gradio{
 				RemoveBox.set_visible(false);
 				AddBox.set_visible(true);
 			}
+
+			// Location
+			StationLocationLabel.set_text(station.Country + ", " + station.State);
+
+			// Description
+			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
+				string desc = AdditionalDataProvider.get_description.end(res);
+
+				if(desc != ""){
+					StationDescriptionLabel.set_text(desc);
+					StationDescriptionBox.set_visible(true);
+				}
+
+			});
 		}
 
 		private void reset_view(){
 			StationTitleLabel.set_text("");
+			StationDescriptionBox.set_visible(false);
+			StationDescriptionLabel.set_text("");
+			StationLocationLabel.set_text("");
+			tbox.set_tags("");
 		}
 
 		[GtkCallback]
@@ -130,14 +156,10 @@ namespace Gradio{
 				App.library.add_radio_station(station);
 			}
 		}
+
+		[GtkCallback]
+		private void OpenHomepageButton_clicked(Button button){
+			Util.open_website(station.Homepage);
+		}
 	}
-}
-
-			// AdditionalDataProvider.get_description.begin(station, (obj,res) => {
-			// 	string desc = AdditionalDataProvider.get_description.end(res);
-
-			// 	if(desc == "")
-			// 		StationDescription.set_text("No description found");
-			// 	else
-			// 		StationDescription.set_text(desc);
-			// });
+}		
