@@ -26,10 +26,6 @@
                 <property name="pixel_size">64</property>
                 <property name="icon_name">application-rss+xml-symbolic</property>
                 <property name="icon_size">6</property>
-                <style>
-                  <class name="border"/>
-                  <class name="round-border"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -65,23 +61,6 @@
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="StationDescription">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="justify">fill</property>
-                        <property name="ellipsize">end</property>
-                        <property name="width_chars">0</property>
-                        <property name="single_line_mode">True</property>
-                        <property name="max_width_chars">90</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -332,16 +311,14 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="ChannelTagsLabel">
+                          <object class="GtkBox" id="StationTags">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Tags</property>
-                            <property name="ellipsize">end</property>
-                            <property name="max_width_chars">70</property>
-                            <attributes>
-                              <attribute name="style" value="oblique"/>
-                            </attributes>
+                            <property name="valign">center</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>

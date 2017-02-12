@@ -6,22 +6,6 @@
 	background-color: mix(@theme_base_color,@theme_bg_color,0.3);
 }
 
-.action-box {
-	border-radius: 0px;
-	padding: 0;
-	background-image: none;
-	background-color: mix(@theme_base_color,#000000,0.2);
-}
-
-.action-box:backdrop label {
-        color: @theme_selected_fg_color;
-}
-
-.stations-view{
-	border-width: 0px 0px 1px 0px;
-	border-style: solid;
-	border-color: @borders;
-}
 
 .round-border{
 	border-radius: 3px;
@@ -55,52 +39,12 @@
 }
 
 
-.sidebar{
-	background-color: mix(@theme_base_color,#000000,0.2);
-	box-shadow: none;
-	background-image: none;
+.tag label {
+        background-color: @theme_bg_color;
+	border-color: @theme_bg_color;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 3px;
+	margin: 0px 3px 0px 3px;
 }
 
-.sidebar listbox{
-	background-color: mix(@theme_base_color,#000000,0.2);
-	box-shadow: none;
-	background-image: none;
-}
-
-.sidebar button {
-	background-color: transparent;
-	border: none;
-	border-radius: 0px;
-	box-shadow: none;
-	background-image: none;
-	outline-color: #999;
-	margin: 0px;
-	-GtkWidget-window-dragging: 1;
-}
-
-.sidebar button:hover {
-	background-color: @theme_selected_bg_color;
-}
-
-
-.sidebar button:checked {
-	background-color: @theme_selected_bg_color;
-}
-
-.shadow {
-	box-shadow: 0px 0px 5px 0px alpha(black, 0.5);
-}
-
-.whitebg {
-	background-color: white;
-}
-
-.overview-more-button {
-	font-size: smaller;
-	padding: 0px 15px;
-}
-
-.small-button {
-	font-size: smaller;
-	padding: 0px 0px;
-}

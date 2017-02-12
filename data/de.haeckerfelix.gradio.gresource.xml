@@ -15,5 +15,6 @@
 	<file>ui/player-toolbar.ui</file>
 	<file>ui/settings-dialog.ui</file>
 	<file>ui/status-label.ui</file>
+	<file>ui/tag-box.ui</file>
   </gresource>
 </gresources>

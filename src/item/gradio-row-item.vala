@@ -22,11 +22,7 @@ namespace Gradio{
 	public class Row : Gtk.ListBoxRow, Item{
 
 		[GtkChild]
-		private Label StationDescription;
-		[GtkChild]
 		private Label ChannelNameLabel;
-		[GtkChild]
-		private Label ChannelTagsLabel;
 		[GtkChild]
 		private Label LikesLabel;
 		[GtkChild]
@@ -41,10 +37,16 @@ namespace Gradio{
 		[GtkChild]
 		private Box RemoveBox;
 
+		[GtkChild]
+		private Box StationTags;
+		private TagBox tbox;
+
 		public RadioStation station;
 
 		public Row(RadioStation s){
 			station = s;
+			tbox = new TagBox();
+			tbox.set_max(4);
 			connect_signals();
 
 			// Set information
@@ -67,17 +69,10 @@ namespace Gradio{
 			set_logo();
 			LikesLabel.set_text(station.Votes.to_string());
 
-			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
-				string desc = AdditionalDataProvider.get_description.end(res);
 
-				if(desc == "")
-					StationDescription.set_text("No description found");
-				else
-					StationDescription.set_text(desc);
-			});
-
+			tbox.set_tags(station.Tags);
+			StationTags.add(tbox);
 			ChannelNameLabel.set_text(station.Title);
-			ChannelTagsLabel.set_text(station.Tags);
 		}
 
 		private void connect_signals(){

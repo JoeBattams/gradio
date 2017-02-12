@@ -122,3 +122,12 @@ namespace Gradio{
 		}
 	}
 }
+
+			// AdditionalDataProvider.get_description.begin(station, (obj,res) => {
+			// 	string desc = AdditionalDataProvider.get_description.end(res);
+
+			// 	if(desc == "")
+			// 		StationDescription.set_text("No description found");
+			// 	else
+			// 		StationDescription.set_text(desc);
+			// });

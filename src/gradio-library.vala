@@ -141,6 +141,7 @@ namespace Gradio{
 			if(!file.query_exists()){
 				file.create (FileCreateFlags.NONE);
 
+				init_database();
 				open_database();
 			}else{
 				warning("Database already exists.");
