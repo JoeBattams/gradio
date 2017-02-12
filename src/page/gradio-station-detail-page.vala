@@ -43,6 +43,9 @@ namespace Gradio{
 		private Box StopBox;
 
 		[GtkChild]
+		private Box InformationBox;
+
+		[GtkChild]
 		private Box StationDescriptionBox;
 
 		[GtkChild]
@@ -124,6 +127,10 @@ namespace Gradio{
 				}
 
 			});
+
+			// Show warning if some information is missing
+			if(station.Tags == "" || station.Homepage == "" || station.Icon == "" || station.Title == "" || station.State == "" || station.Country == "")
+				InformationBox.set_visible(true);
 		}
 
 		private void reset_view(){
@@ -132,6 +139,8 @@ namespace Gradio{
 			StationDescriptionLabel.set_text("");
 			StationLocationLabel.set_text("");
 			tbox.set_tags("");
+
+			InformationBox.set_visible(false);
 		}
 
 		[GtkCallback]
@@ -160,6 +169,11 @@ namespace Gradio{
 		[GtkCallback]
 		private void OpenHomepageButton_clicked(Button button){
 			Util.open_website(station.Homepage);
+		}
+
+		[GtkCallback]
+		private void EditButton_clicked(Button button){
+			Util.open_website("http://www.radio-browser.info/gui/#/edit/" + station.ID.to_string());
 		}
 	}
 }		
