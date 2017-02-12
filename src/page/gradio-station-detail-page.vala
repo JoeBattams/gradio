@@ -49,7 +49,7 @@ namespace Gradio{
 		private Box StationDescriptionBox;
 
 		[GtkChild]
-		private Label LikesLabel;
+		private Label StationLikesLabel;
 
 		private RadioStation station;
 
@@ -59,25 +59,13 @@ namespace Gradio{
 		}
 
 		private void connect_signals(){
-			station.played.connect(() => {
-				StopBox.set_visible(true);
-				PlayBox.set_visible(false);
-			});
+			station.played.connect(show_stop_box);
 
-			station.stopped.connect(() => {
-				StopBox.set_visible(false);
-				PlayBox.set_visible(true);
-			});
+			station.stopped.connect(show_play_box);
 
-			station.added_to_library.connect(() => {
-				AddBox.set_visible(false);
-				RemoveBox.set_visible(true);
-			});
+			station.added_to_library.connect(show_remove_box);
 
-			station.removed_from_library.connect(() => {
-				AddBox.set_visible(true);
-				RemoveBox.set_visible(false);
-			});
+			station.removed_from_library.connect(show_add_box);
 		}
 
 		private void setup_view(){
@@ -93,7 +81,22 @@ namespace Gradio{
 		}
 
 		private void set_data(){
+			// Disconnect old signals
+			if(station != null){
+				station.played.disconnect(show_stop_box);
+				station.stopped.disconnect(show_play_box);
+				station.added_to_library.disconnect(show_remove_box);
+				station.removed_from_library.disconnect(show_add_box);
+			}
+
+			//connect new signals
+			connect_signals();
+
+
+			// Title
 			StationTitleLabel.set_text(station.Title);
+
+			// Tags
 			tbox.set_tags(station.Tags);
 
 			// Play / Stop Button
@@ -116,6 +119,9 @@ namespace Gradio{
 
 			// Location
 			StationLocationLabel.set_text(station.Country + ", " + station.State);
+
+			// Likes
+			StationLikesLabel.set_text(station.Votes.to_string());
 
 			// Description
 			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
@@ -143,10 +149,30 @@ namespace Gradio{
 			InformationBox.set_visible(false);
 		}
 
+		private void show_add_box(){
+			AddBox.set_visible(true);
+			RemoveBox.set_visible(false);
+		}
+
+		private void show_remove_box(){
+			AddBox.set_visible(false);
+			RemoveBox.set_visible(true);
+		}
+
+		private void show_play_box(){
+			StopBox.set_visible(false);
+			PlayBox.set_visible(true);
+		}
+
+		private void show_stop_box(){
+			StopBox.set_visible(true);
+			PlayBox.set_visible(false);
+		}
+
 		[GtkCallback]
 		private void LikeButton_clicked(Button b){
 			station.vote();
-			LikesLabel.set_text(station.Votes.to_string());
+			StationLikesLabel.set_text(station.Votes.to_string());
 		}
 
 		[GtkCallback]
