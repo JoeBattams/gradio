@@ -46,6 +46,10 @@ public class Util{
 		container.foreach(remove_all_cb);
 	}
 
+	public static void remove_all_items_from_box (Gtk.Box container) {
+		container.foreach(remove_all_cb);
+	}
+
 	private static void remove_all_cb(Gtk.Widget w){
 		w.destroy();
 	}

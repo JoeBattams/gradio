@@ -23,6 +23,9 @@ namespace Gradio{
 
 		[GtkChild]
 		private Label StationTitleLabel;
+		[GtkChild]
+		private Box StationTags;
+		private TagBox tbox;
 
 		[GtkChild]
 		private Box RemoveBox;
@@ -40,6 +43,7 @@ namespace Gradio{
 		private RadioStation station;
 
 		public StationDetailPage(){
+			setup_view();
 			connect_signals();
 		}
 
@@ -65,6 +69,11 @@ namespace Gradio{
 			});
 		}
 
+		private void setup_view(){
+			tbox = new TagBox();
+			StationTags.add(tbox);
+		}
+
 		public void set_station(RadioStation s){
 			station = s;
 
@@ -74,6 +83,7 @@ namespace Gradio{
 
 		private void set_data(){
 			StationTitleLabel.set_text(station.Title);
+			tbox.set_tags(station.Tags);
 
 			// Play / Stop Button
 			if(App.player.is_playing_station(station)){

@@ -32,6 +32,8 @@ namespace Gradio{
 		}
 
 		public void set_tags(string txt){
+			Util.remove_all_items_from_box(this);
+
 			string[] tags = txt.split (",");
 
 			if(max == -1){

@@ -41,10 +41,11 @@
 
 .tag label {
         background-color: @theme_bg_color;
-	border-color: @theme_bg_color;
+	border-color: @unfocused_borders;
         border-radius: 3px;
         border-style: solid;
-        border-width: 3px;
+        border-width: 1px;
 	margin: 0px 3px 0px 3px;
 }
+
 
