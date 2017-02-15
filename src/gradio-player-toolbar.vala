@@ -22,15 +22,15 @@ namespace Gradio{
 	public class PlayerToolbar : Gtk.ActionBar{
 
 		[GtkChild]
-		private Image PlayImage;
+		private Label StationTitleLabel;
 		[GtkChild]
-		private Image StopImage;
-		[GtkChild]
-		private Label ChannelNameLabel;
-		[GtkChild]
-		private Label ChannelCurrentTitleLabel;
+		private Label StationMetadataLabel;
 		[GtkChild]
 		private Image StationLogo;
+		[GtkChild]
+		private Label StationLikesLabel;
+
+
 		[GtkChild]
 		private Box StationLogoBox;
 		[GtkChild]
@@ -41,18 +41,35 @@ namespace Gradio{
 		private Box ActionBox;
 		[GtkChild]
 		private Box StatusBox;
+
+
 		[GtkChild]
 		private Image AddImage;
 		[GtkChild]
 		private Image RemoveImage;
+
 		[GtkChild]
-		private Label LikesLabel;
+		private Image PlayImage;
+		[GtkChild]
+		private Image StopImage;
 
 		private StatusLabel sl;
 
 		RadioStation station = null;
 
 		public PlayerToolbar(){
+			setup_view();
+
+			App.player.tag_changed.connect (() => set_tag());
+			App.player.radio_station_changed.connect(() => {
+				Idle.add(() => {
+					station_changed();
+					return false;
+				});
+			});
+		}
+
+		private void setup_view(){
 			this.pack_start(MediaControlBox);
 			this.pack_start(StationLogoBox);
 			this.pack_start(InfoBox);
@@ -61,17 +78,53 @@ namespace Gradio{
 			sl = new StatusLabel();
 			StatusBox.pack_start(sl);
 			this.show_all();
-
-			App.player.tag_changed.connect (() => set_information());
-			App.player.radio_station_changed.connect(() => {
-				Idle.add(() => {
-					station_changed();
-					return false;
-				});
-			});
-
 		}
 
+		private void station_changed (){
+			//disconnect old signals
+			if(station != null){
+				station.played.disconnect(show_stop_icon);
+				station.stopped.disconnect(show_play_icon);
+				station.added_to_library.disconnect(show_remove_icon);
+				station.removed_from_library.disconnect(show_add_icon);
+			}
+
+			// set new station
+			if(App.player.current_station != null)
+				station = App.player.current_station;
+
+			//connect new signals
+			station.played.connect(show_stop_icon);
+			station.stopped.connect(show_play_icon);
+			station.added_to_library.connect(show_remove_icon);
+			station.removed_from_library.connect(show_add_icon);
+
+			// Play / Stop Button
+			if(App.player.is_playing_station(station))
+				show_stop_icon();
+			else
+				show_play_icon();
+
+			// Add / Remove Button
+			if(App.library.contains_station(station))
+				show_remove_icon();
+			else
+				show_add_icon();
+
+
+			// Title
+			StationTitleLabel.set_text(station.Title);
+
+			// Likes
+			StationLikesLabel.set_text(station.Votes.to_string());
+
+			this.set_visible(true);
+		}
+
+		private void set_tag(){
+			if(App.player.tag_title != null)
+				StationMetadataLabel.set_text(App.player.tag_title);
+		}
 
 		private void show_stop_icon(){
 			StopImage.set_visible(true);
@@ -83,47 +136,14 @@ namespace Gradio{
 			PlayImage.set_visible(true);
 		}
 
-		private void send_notification(string summary, string body){
-			Util.send_notification(summary, body);
+		private void show_add_icon(){
+			AddImage.set_visible(true);
+			RemoveImage.set_visible(false);
 		}
 
-		private void station_changed (){
-			//disconnect old signals
-			if(station != null){
-				station.played.disconnect(show_stop_icon);
-				station.stopped.disconnect(show_play_icon);
-			}
-
-		   	if(App.player.current_station != null)
-				station = App.player.current_station;
-
-			//connect new signals
-			station.played.connect(show_stop_icon);
-			station.stopped.connect(show_play_icon);
-
-			if(station.is_playing)
-				show_stop_icon();
-
-			ChannelNameLabel.set_text(station.Title);
-			ChannelCurrentTitleLabel.set_text("");
-
-			StationLogo.set_from_icon_name("application-rss+xml-symbolic", IconSize.DND);
-			Gdk.Pixbuf icon = null;
-
-			Gradio.App.imgprovider.get_station_logo.begin(station, 41, (obj, res) => {
-		        	icon = Gradio.App.imgprovider.get_station_logo.end(res);
-
-				if(icon != null){
-					StationLogo.set_from_pixbuf(icon);
-				}else{
-					StationLogo.set_from_icon_name("application-rss+xml-symbolic", IconSize.DND);
-				}
-        		});
-
-			refresh_add_remove_button();
-			refresh_like_button();
-
-			this.set_visible(true);
+		private void show_remove_icon(){
+			AddImage.set_visible(false);
+			RemoveImage.set_visible(true);
 		}
 
 		[GtkCallback]
@@ -137,43 +157,13 @@ namespace Gradio{
 				App.library.remove_radio_station(station);
 			else
 				App.library.add_radio_station(station);
-
-			refresh_add_remove_button();
 		}
 
 		[GtkCallback]
 		private void LikeButton_clicked(Button button){
 			station.vote();
-			refresh_like_button();
+			StationLikesLabel.set_text(station.Votes.to_string());
 		}
-
-		[GtkCallback]
-		private void OpenHomepageButton_clicked (Button button) {
-			Util.open_website(station.Homepage);
-		}
-
-		private void set_information(){
-			if(App.player.tag_title != null)
-				ChannelCurrentTitleLabel.set_text(App.player.tag_title);
-
-			if (Settings.show_notifications && station != null)
-				if(station.Title != null && App.player.tag_title != null)
-					send_notification(station.Title, App.player.tag_title);
-		}
-
-		private void refresh_like_button(){
-			LikesLabel.set_text(station.Votes.to_string());
-		}
-
-		private void refresh_add_remove_button(){
-			if(Gradio.App.library.contains_station(station)){
-				AddImage.set_visible(false);
-				RemoveImage.set_visible(true);
-			}else{
-				AddImage.set_visible(true);
-				RemoveImage.set_visible(false);
-			}
-		}
-
 	}
 }
+

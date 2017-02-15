@@ -49,9 +49,6 @@ namespace Gradio{
 		private int height;
 		private int width;
 
-		private int pos_x;
-		private int pos_y;
-
 		private StatusIcon trayicon;
 		public signal void toggle_view();
 		public signal void tray_activate();
@@ -63,41 +60,28 @@ namespace Gradio{
 		LibraryPage library_page;
 		StationDetailPage station_detail_page;
 
-		private GradioMode current_page;
+		private GradioPage current_page;
 
-		Queue<GradioMode> back_entry_stack = new Queue<GradioMode>();
+		Queue<GradioPage> back_entry_stack = new Queue<GradioPage>();
 
-		public enum GradioMode {
-			MODE_UNKNOWN,
-			MODE_LIBRARY,
-			MODE_DISCOVER,
-			MODE_SEARCH,
-			MODE_DETAILS,
-			MODE_LOADING,
-			MODE_CATEGORY,
-			MODE_EDIT,
-			MODE_EXTRAS,
-			MODE_LAST
+		public enum GradioPage {
+			UNKNOWN,
+			LIBRARY,
+			DISCOVER,
+			SEARCH,
+			DETAILS,
+			LOADING,
+			CATEGORY,
+			EDIT,
+			EXTRAS,
+			LAST
 		}
 
 		private App app;
 
 		public MainWindow (App appl) {
 	       		GLib.Object(application: appl);
-
 			app = appl;
-
-			var builder = new Gtk.Builder.from_resource ("/de/haecker-felix/gradio/ui/app-menu.ui");
-			var app_menu = builder.get_object ("app-menu") as GLib.MenuModel;
-			MenuButton.set_menu_model(app_menu);
-
-
-			// Hide menu button if desktop = gnome. (else show it)
- 			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP") == "gnome")
-				MenuButton.set_visible (false);
-			else
-				MenuButton.set_visible (true);
-			message("Desktop session is %s.", GLib.Environment.get_variable(" XDG_CURRENT_DESKTOP"));
 
 			setup_tray_icon();
 			setup_view();
@@ -135,7 +119,7 @@ namespace Gradio{
 			MainStack.add_titled(discover_page, "discover_page", "Discover");
 
 			// showing library on startup
-			set_page(GradioMode.MODE_LIBRARY);
+			set_page(GradioPage.LIBRARY);
 
 			VolumeButton.set_relief(ReliefStyle.NORMAL);
 			VolumeButton.set_value(Settings.volume_position);
@@ -169,34 +153,25 @@ namespace Gradio{
 		}
 
 		public void save_geometry (){
-			this.get_position (out pos_x, out pos_y);
 			this.get_size (out width, out height);
 
 			Settings.window_height = height;
 			Settings.window_width = width;
-
-			Settings.window_position_x = pos_x;
-			Settings.window_position_y = pos_y;
-
-			this.move(pos_x, pos_y);
 		}
 
 		public void restore_geometry(){
 			width = Settings.window_width;
 			height = Settings.window_height;
-			this.set_default_size(width, height);
-			pos_x = Settings.window_position_x;
-			pos_y = Settings.window_position_y;
 		}
 
-		public void set_page(GradioMode mode, bool writehistory = true){
+		public void set_page(GradioPage mode, bool writehistory = true){
 			if(mode != current_page){
 
 				// set correct page switcher button
-				if(mode == GradioMode.MODE_DISCOVER){
+				if(mode == GradioPage.DISCOVER){
 					DiscoverToggleButton.set_active(true);
 					LibraryToggleButton.set_active(false);
-				}else if(mode == GradioMode.MODE_LIBRARY){
+				}else if(mode == GradioPage.LIBRARY){
 					DiscoverToggleButton.set_active(false);
 					LibraryToggleButton.set_active(true);
 				}else{
@@ -205,7 +180,7 @@ namespace Gradio{
 				}
 
 				// show or hide the search bar
-				if(mode == GradioMode.MODE_SEARCH){
+				if(mode == GradioPage.SEARCH){
 					SearchBar.set_search_mode(true);
 					SearchButton.set_active(true);
 				}else{
@@ -215,7 +190,7 @@ namespace Gradio{
 
 
 				// Hide Back button and if discover or library -> erase the history
-				if(mode != GradioMode.MODE_LIBRARY && mode != GradioMode.MODE_DISCOVER){
+				if(mode != GradioPage.LIBRARY && mode != GradioPage.DISCOVER){
 					BackButton.set_visible(true);
 				}else{
 					BackButton.set_visible(false);
@@ -233,24 +208,24 @@ namespace Gradio{
 
 				// actual switching here ->
 				switch(mode){
-					case GradioMode.MODE_SEARCH:{
+					case GradioPage.SEARCH:{
 						MainStack.set_visible_child_name("search_page");
-						current_page = GradioMode.MODE_SEARCH;
+						current_page = GradioPage.SEARCH;
 						break;
 					};
-					case GradioMode.MODE_DISCOVER: {
+					case GradioPage.DISCOVER: {
 						MainStack.set_visible_child_name("discover_page");
-						current_page = GradioMode.MODE_DISCOVER;
+						current_page = GradioPage.DISCOVER;
 						break;
 					};
-					case GradioMode.MODE_LIBRARY: {
+					case GradioPage.LIBRARY: {
 						MainStack.set_visible_child_name("library_page");
-						current_page = GradioMode.MODE_LIBRARY;
+						current_page = GradioPage.LIBRARY;
 						break;
 					};
-					case GradioMode.MODE_DETAILS: {
+					case GradioPage.DETAILS: {
 						MainStack.set_visible_child_name("station_detail_page");
-						current_page = GradioMode.MODE_DETAILS;
+						current_page = GradioPage.DETAILS;
 						break;
 					};
 				}
@@ -259,16 +234,16 @@ namespace Gradio{
 
 		private void show_previous_page(){
 			switch(back_entry_stack.peek_tail()){
-				case GradioMode.MODE_SEARCH: set_page(GradioMode.MODE_SEARCH, false); break;
-				case GradioMode.MODE_LIBRARY: set_page(GradioMode.MODE_LIBRARY, false); break;
-				case GradioMode.MODE_DISCOVER: set_page(GradioMode.MODE_DISCOVER, false); break;
-				case GradioMode.MODE_DETAILS: set_page(GradioMode.MODE_DETAILS, false); break;
+				case GradioPage.SEARCH: set_page(GradioPage.SEARCH, false); break;
+				case GradioPage.LIBRARY: set_page(GradioPage.LIBRARY, false); break;
+				case GradioPage.DISCOVER: set_page(GradioPage.DISCOVER, false); break;
+				case GradioPage.DETAILS: set_page(GradioPage.DETAILS, false); break;
 			}
 		}
 
 		public void show_station_detail_page(RadioStation station){
 			station_detail_page.set_station(station);
-			set_page(GradioMode.MODE_DETAILS);
+			set_page(GradioPage.DETAILS);
 		}
 
 		[GtkCallback]
@@ -281,12 +256,12 @@ namespace Gradio{
 
 		[GtkCallback]
 		private void DiscoverToggleButton_toggled (){
-			set_page(GradioMode.MODE_DISCOVER);
+			set_page(GradioPage.DISCOVER);
 		}
 
 		[GtkCallback]
 		private void LibraryToggleButton_toggled (){
-			set_page(GradioMode.MODE_LIBRARY);
+			set_page(GradioPage.LIBRARY);
 		}
 
 		[GtkCallback]
@@ -300,7 +275,7 @@ namespace Gradio{
 
 			if(search_term != "" && search_term.length >= 3){
 				search_page.search(SearchEntry.get_text());
-				set_page(GradioMode.MODE_SEARCH);
+				set_page(GradioPage.SEARCH);
 			}
 		}
 
@@ -345,3 +320,4 @@ namespace Gradio{
 
 	}
 }
+

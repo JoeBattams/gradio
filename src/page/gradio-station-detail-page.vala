@@ -60,11 +60,8 @@ namespace Gradio{
 
 		private void connect_signals(){
 			station.played.connect(show_stop_box);
-
 			station.stopped.connect(show_play_box);
-
 			station.added_to_library.connect(show_remove_box);
-
 			station.removed_from_library.connect(show_add_box);
 		}
 
@@ -92,6 +89,17 @@ namespace Gradio{
 			//connect new signals
 			connect_signals();
 
+			// Play / Stop Button
+			if(App.player.is_playing_station(station))
+				show_stop_box();
+			else
+				show_play_box();
+
+			// Add / Remove Button
+			if(App.library.contains_station(station))
+				show_remove_box();
+			else
+				show_add_box();
 
 			// Title
 			StationTitleLabel.set_text(station.Title);
@@ -99,26 +107,8 @@ namespace Gradio{
 			// Tags
 			tbox.set_tags(station.Tags);
 
-			// Play / Stop Button
-			if(App.player.is_playing_station(station)){
-				StopBox.set_visible(true);
-				PlayBox.set_visible(false);
-			}else{
-				StopBox.set_visible(false);
-				PlayBox.set_visible(true);
-			}
-
-			// Add / Remove Button
-			if(App.library.contains_station(station)){
-				RemoveBox.set_visible(true);
-				AddBox.set_visible(false);
-			}else{
-				RemoveBox.set_visible(false);
-				AddBox.set_visible(true);
-			}
-
 			// Location
-			StationLocationLabel.set_text(station.Country + ", " + station.State);
+			StationLocationLabel.set_text(station.Country + " " + station.State);
 
 			// Likes
 			StationLikesLabel.set_text(station.Votes.to_string());

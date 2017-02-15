@@ -25,7 +25,6 @@ namespace Gradio{
 
 		public RowView(ref StationModel m){
 			model = m;
-
 			this.set_header_func(header_func);
 
 			connect_signals();

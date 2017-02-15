@@ -37,6 +37,12 @@
 	border-style: solid;
 	border-color: @borders;
 }
+.border-left-right{
+        border-width: 0px 1px 0px 1px;
+        border-style: solid;
+        border-color: @borders;
+
+}
 
 
 .tag label {
@@ -48,4 +54,11 @@
 	margin: 0px 3px 0px 3px;
 }
 
-
+.warning-box {
+        background-color: #fcaf3e;
+        color: @theme_fg_color;
+        border-color: darker(#fcaf3e);
+        border-style: solid;
+        border-width: 1px;
+        text-shadow: none;
+}

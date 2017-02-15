@@ -55,16 +55,6 @@
       <summary>Width of the window</summary>
     </key>
 
-   <key name="window-position-x" type="i">
-      <default>0</default>
-      <summary>Position of the window</summary>
-    </key>
-
-    <key name="window-position-y" type="i">
-      <default>0</default>
-      <summary>Position of the window</summary>
-    </key>
-
     <key name="show-languages-category" type="b">
       <default>true</default>
       <summary>Show languages in discover tab</summary>
