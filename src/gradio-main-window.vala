@@ -222,7 +222,7 @@ namespace Gradio{
 
 			switch(entry.mode){
 				case WindowMode.DETAILS: change_mode(entry.mode, entry.data); break;
-				case WindowMode.SEARCH: change_mode(entry.mode); break;
+				case WindowMode.SEARCH: SearchEntry.set_text(entry.data.search); change_mode(entry.mode); break;
 				default: change_mode (entry.mode);break;
 			}
 
