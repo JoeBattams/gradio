@@ -21,8 +21,10 @@ namespace Gradio{
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/page/discover-page.ui")]
 	public class DiscoverPage : Gtk.Box, Page{
 
-		public DiscoverPage(){
+		public bool reset_history { get; set; }
 
+		public DiscoverPage(){
+			this.reset_history = true;
 		}
 
 		public void show_grid_view(){

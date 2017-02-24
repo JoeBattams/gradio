@@ -34,7 +34,11 @@ namespace Gradio{
 		private int search_delay = 1000;
 		private uint delayed_changed_id;
 
+		public bool reset_history { get; set; }
+
 		public SearchPage(){
+			this.reset_history = false;
+
 			station_model =  new StationModel();
 			row_view = new RowView(ref station_model);
 			station_provider = new StationProvider(ref station_model);
@@ -47,9 +51,13 @@ namespace Gradio{
 
 		}
 
-		public void search(string txt){
+		public void set_search(string txt){
 			search_text = txt;
 			reset_timeout();
+		}
+
+		public string get_search(){
+			return search_text;
 		}
 
 		private void reset_timeout(){

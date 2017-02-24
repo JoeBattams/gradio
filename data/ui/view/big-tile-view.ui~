@@ -5,8 +5,5 @@
   <template class="GradioBigTileView" parent="GtkFlowBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <style>
-      <class name="no-border-radius"/>
-    </style>
   </template>
 </interface>

@@ -22,11 +22,11 @@ namespace Gradio{
 	public class Row : Gtk.ListBoxRow, Item{
 
 		[GtkChild]
-		private Label ChannelNameLabel;
+		private Label StationTitleLabel;
 		[GtkChild]
-		private Label LikesLabel;
+		private Label StationLikesLabel;
 		[GtkChild]
-		private Image ChannelLogoImage;
+		private Image StationLogoImage;
 
 		[GtkChild]
 		private Box PlayBox;
@@ -47,6 +47,8 @@ namespace Gradio{
 			station = s;
 			tbox = new TagBox();
 			tbox.set_max(4);
+			StationTags.add(tbox);
+
 			connect_signals();
 
 			// Set information
@@ -65,14 +67,10 @@ namespace Gradio{
 				AddBox.set_visible(true);
 			}
 
-			// Load basic information
+			StationTitleLabel.set_text(station.Title);
+			StationLikesLabel.set_text(station.Votes.to_string());
 			set_logo();
-			LikesLabel.set_text(station.Votes.to_string());
-
-
 			tbox.set_tags(station.Tags);
-			StationTags.add(tbox);
-			ChannelNameLabel.set_text(station.Title);
 		}
 
 		private void connect_signals(){
@@ -98,21 +96,14 @@ namespace Gradio{
 		}
 
 		private void set_logo(){
-			Gdk.Pixbuf icon = null;
-			Gradio.App.imgprovider.get_station_logo.begin(station, 32, (obj, res) => {
-		        	icon = Gradio.App.imgprovider.get_station_logo.end(res);
-
-				if(icon != null){
-					ChannelLogoImage.set_from_pixbuf(icon);
-				}
-        		});
+			//TODO: insert logo loader here
 		}
 
 
 		[GtkCallback]
 		private void LikeButton_clicked(Button b){
 			station.vote();
-			LikesLabel.set_text(station.Votes.to_string());
+			StationLikesLabel.set_text(station.Votes.to_string());
 		}
 
 		[GtkCallback]

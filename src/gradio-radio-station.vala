@@ -15,7 +15,7 @@
  */
 
 namespace Gradio{
-	public class RadioStation : Object{
+	public class RadioStation : GLib.Object{
 		public string Title { get; set; }
 		public string Homepage { get; set; }
 		public string Language { get; set; }

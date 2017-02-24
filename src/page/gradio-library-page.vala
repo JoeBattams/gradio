@@ -27,7 +27,11 @@ namespace Gradio{
 		[GtkChild]
 		private Box StationBox;
 
+		public bool reset_history { get; set; }
+
 		public LibraryPage(){
+			this.reset_history = true;
+
 			station_model = Library.library_model;
 			station_view = new RowView(ref station_model);
 

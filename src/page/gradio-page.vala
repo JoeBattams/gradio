@@ -17,8 +17,12 @@
 using Gtk;
 
 namespace Gradio{
+
 	public interface Page{
 
+		// For discover or library page.
+		// (back button)
+		public abstract bool reset_history { get; set; }
 
 	}
 }

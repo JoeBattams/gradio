@@ -19,8 +19,19 @@ using Gst;
 
 namespace Gradio{
 
+	public enum WindowMode {
+		LIBRARY,
+		DISCOVER,
+		SEARCH,
+		DETAILS,
+		SETTINGS,
+		LOADING
+	}
+
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/main-window.ui")]
 	public class MainWindow : Gtk.ApplicationWindow {
+
+		public string[] page_name = { "library", "discover", "search", "details", "settings", "loading" };
 
 		[GtkChild]
 		private Entry SearchEntry;
@@ -42,6 +53,8 @@ namespace Gradio{
 		private Button BackButton;
 
 		[GtkChild]
+		private ButtonBox MainButtonBox;
+		[GtkChild]
 		private ToggleButton DiscoverToggleButton;
 		[GtkChild]
 		private ToggleButton LibraryToggleButton;
@@ -60,22 +73,9 @@ namespace Gradio{
 		LibraryPage library_page;
 		StationDetailPage station_detail_page;
 
-		private GradioPage current_page;
-
-		Queue<GradioPage> back_entry_stack = new Queue<GradioPage>();
-
-		public enum GradioPage {
-			UNKNOWN,
-			LIBRARY,
-			DISCOVER,
-			SEARCH,
-			DETAILS,
-			LOADING,
-			CATEGORY,
-			EDIT,
-			EXTRAS,
-			LAST
-		}
+		GLib.Queue<BackEntry> back_entry_stack = new GLib.Queue<BackEntry>();
+		WindowMode current_mode;
+		bool in_mode_change;
 
 		private App app;
 
@@ -89,37 +89,21 @@ namespace Gradio{
 			connect_signals();
 		}
 
-		private void setup_tray_icon(){
-			trayicon = new StatusIcon.from_icon_name("de.haeckerfelix.gradio-symbolic");
-      			trayicon.set_tooltip_text ("Click to restore...");
-      			trayicon.set_visible(false);
-
-      			trayicon.activate.connect(() => tray_activate());
-		}
-
-		public void show_tray_icon(){
-			trayicon.set_visible(true);
-		}
-
-		public void hide_tray_icon(){
-			trayicon.set_visible(false);
-		}
-
 		private void setup_view(){
 			search_page = new SearchPage();
-			MainStack.add_named(search_page, "search_page");
+			MainStack.add_named(search_page, page_name[WindowMode.SEARCH]);
 
 			station_detail_page = new StationDetailPage();
-			MainStack.add_named(station_detail_page, "station_detail_page");
+			MainStack.add_named(station_detail_page, page_name[WindowMode.DETAILS]);
 
 			library_page = new LibraryPage();
-			MainStack.add_titled(library_page, "library_page", "Library");
+			MainStack.add_named(library_page, page_name[WindowMode.LIBRARY]);
 
 			discover_page = new DiscoverPage();
-			MainStack.add_titled(discover_page, "discover_page", "Discover");
+			MainStack.add_named(discover_page, page_name[WindowMode.DISCOVER]);
 
 			// showing library on startup
-			set_page(GradioPage.LIBRARY);
+			change_mode(WindowMode.LIBRARY);
 
 			VolumeButton.set_relief(ReliefStyle.NORMAL);
 			VolumeButton.set_value(Settings.volume_position);
@@ -145,6 +129,26 @@ namespace Gradio{
 				width = a.width;
 				height = a.height;
 			});
+
+			LibraryToggleButton.clicked.connect(show_library);
+			DiscoverToggleButton.clicked.connect(show_discover);
+			SearchBar.notify["search-mode-enabled"].connect(search_mode_activated);
+		}
+
+		private void setup_tray_icon(){
+			trayicon = new StatusIcon.from_icon_name("de.haeckerfelix.gradio-symbolic");
+      			trayicon.set_tooltip_text ("Click to restore...");
+      			trayicon.set_visible(false);
+
+      			trayicon.activate.connect(() => tray_activate());
+		}
+
+		public void show_tray_icon(){
+			trayicon.set_visible(true);
+		}
+
+		public void hide_tray_icon(){
+			trayicon.set_visible(false);
 		}
 
 		public void show_no_connection_message (){
@@ -164,109 +168,140 @@ namespace Gradio{
 			height = Settings.window_height;
 		}
 
-		public void set_page(GradioPage mode, bool writehistory = true){
-			if(mode != current_page){
+		private void change_mode(WindowMode mode, DataWrapper data = new DataWrapper()){
+			in_mode_change = true;
 
-				// set correct page switcher button
-				if(mode == GradioPage.DISCOVER){
-					DiscoverToggleButton.set_active(true);
-					LibraryToggleButton.set_active(false);
-				}else if(mode == GradioPage.LIBRARY){
-					DiscoverToggleButton.set_active(false);
-					LibraryToggleButton.set_active(true);
-				}else{
-					DiscoverToggleButton.set_active(false);
-					LibraryToggleButton.set_active(false);
-				}
+			// update main buttons according to mode
+			DiscoverToggleButton.set_active(mode == WindowMode.DISCOVER);
+			LibraryToggleButton.set_active(mode == WindowMode.LIBRARY);
 
-				// show or hide the search bar
-				if(mode == GradioPage.SEARCH){
-					SearchBar.set_search_mode(true);
-					SearchButton.set_active(true);
-				}else{
-					SearchBar.set_search_mode(false);
-					SearchButton.set_active(false);
-				}
+			// hide unless we're going to search
+			SearchBar.set_search_mode (mode == WindowMode.SEARCH);
 
 
-				// Hide Back button and if discover or library -> erase the history
-				if(mode != GradioPage.LIBRARY && mode != GradioPage.DISCOVER){
-					BackButton.set_visible(true);
-				}else{
-					BackButton.set_visible(false);
-					back_entry_stack.clear();
-					message("History is nulled");
-				}
+			// setting new mode
+			current_mode = mode;
 
+			// switch page
+			MainStack.set_visible_child_name(page_name[current_mode]);
 
-				// push the old page into the history :)
-				if(writehistory)
-					back_entry_stack.push_tail(current_page);
-				else
-					back_entry_stack.pop_tail();
-
-
-				// actual switching here ->
-				switch(mode){
-					case GradioPage.SEARCH:{
-						MainStack.set_visible_child_name("search_page");
-						current_page = GradioPage.SEARCH;
-						break;
-					};
-					case GradioPage.DISCOVER: {
-						MainStack.set_visible_child_name("discover_page");
-						current_page = GradioPage.DISCOVER;
-						break;
-					};
-					case GradioPage.LIBRARY: {
-						MainStack.set_visible_child_name("library_page");
-						current_page = GradioPage.LIBRARY;
-						break;
-					};
-					case GradioPage.DETAILS: {
-						MainStack.set_visible_child_name("station_detail_page");
-						current_page = GradioPage.DETAILS;
-						break;
-					};
-				}
+			// do action for mode
+			switch(current_mode){
+				case WindowMode.SEARCH:{
+					break;
+				};
+				case WindowMode.DISCOVER: {
+					clean_back_entry_stack();
+					break;
+				};
+				case WindowMode.LIBRARY: {
+					clean_back_entry_stack();
+					break;
+				};
+				case WindowMode.DETAILS: {
+					station_detail_page.set_station((RadioStation)data.station);
+					break;
+				};
 			}
+
+			// show back button if needed
+			BackButton.set_visible(current_mode != WindowMode.SEARCH && !(back_entry_stack.is_empty()));
+
+			in_mode_change = false;
+
+			message("Changed mode to " + page_name[current_mode] + "page");
 		}
 
-		private void show_previous_page(){
-			switch(back_entry_stack.peek_tail()){
-				case GradioPage.SEARCH: set_page(GradioPage.SEARCH, false); break;
-				case GradioPage.LIBRARY: set_page(GradioPage.LIBRARY, false); break;
-				case GradioPage.DISCOVER: set_page(GradioPage.DISCOVER, false); break;
-				case GradioPage.DETAILS: set_page(GradioPage.DETAILS, false); break;
-			}
+		private void clean_back_entry_stack(){
+			message("cleand back_entry_stack");
+			back_entry_stack.clear();
 		}
 
-		public void show_station_detail_page(RadioStation station){
-			station_detail_page.set_station(station);
-			set_page(GradioPage.DETAILS);
+		private void go_back(){
+			BackEntry entry = back_entry_stack.pop_head();
+
+			switch(entry.mode){
+				case WindowMode.DETAILS: change_mode(entry.mode, entry.data); break;
+				case WindowMode.SEARCH: change_mode(entry.mode); break;
+				default: change_mode (entry.mode);break;
+			}
+
+
+		}
+
+		private void save_back_entry(){
+			BackEntry entry = new BackEntry();
+			DataWrapper data = new DataWrapper();
+
+			entry.mode = current_mode;
+
+			switch(entry.mode){
+				case WindowMode.DETAILS: data.station = station_detail_page.get_station(); break;
+				case WindowMode.SEARCH: data.search = search_page.get_search(); break;
+				default: break;
+			}
+
+			entry.data = data;
+			back_entry_stack.push_head(entry);
+		}
+
+		public void show_library(){
+			if(in_mode_change)
+				return;
+
+			save_back_entry();
+			change_mode(WindowMode.LIBRARY);
+		}
+
+		public void show_discover(){
+			if(in_mode_change)
+				return;
+
+			save_back_entry();
+			change_mode(WindowMode.DISCOVER);
+		}
+
+		public void show_search(){
+			if(in_mode_change)
+				return;
+
+			save_back_entry();
+			change_mode(WindowMode.SEARCH);
+		}
+
+		public void show_station_details(RadioStation station){
+			if(in_mode_change)
+				return;
+
+			save_back_entry();
+
+			DataWrapper data = new DataWrapper();
+			data.station = station;
+			change_mode(WindowMode.DETAILS, data);
+		}
+
+		public void show_settings(){
+			if(in_mode_change)
+				return;
+
+			save_back_entry();
+			change_mode(WindowMode.SETTINGS);
+		}
+
+		private void search_mode_activated(){
+			SearchButton.set_active(SearchBar.get_search_mode());
 		}
 
 		[GtkCallback]
 		private void SearchButton_toggled (){
-			if(SearchButton.get_active())
-				SearchBar.set_search_mode(true);
-			else
-				SearchBar.set_search_mode(false);
-		}
+			SearchBar.set_search_mode(SearchButton.get_active());
 
-		[GtkCallback]
-		private void DiscoverToggleButton_toggled (){
-			set_page(GradioPage.DISCOVER);
-		}
+			if(in_mode_change)
+				return;
 
-		[GtkCallback]
-		private void LibraryToggleButton_toggled (){
-			set_page(GradioPage.LIBRARY);
-		}
+			if(current_mode == WindowMode.SEARCH && !(SearchButton.get_active()))
+				go_back();
 
-		[GtkCallback]
-		public void BackButton_clicked (Gtk.Button button) {
-			show_previous_page();
 		}
 
 		[GtkCallback]
@@ -274,9 +309,21 @@ namespace Gradio{
 			string search_term = SearchEntry.get_text();
 
 			if(search_term != "" && search_term.length >= 3){
-				search_page.search(SearchEntry.get_text());
-				set_page(GradioPage.SEARCH);
+				if(current_mode != WindowMode.SEARCH){
+					save_back_entry();
+
+					DataWrapper data = new DataWrapper();
+					data.search = search_term;
+					change_mode(WindowMode.SEARCH, data);
+				}else{
+					search_page.set_search(search_term);
+				}
 			}
+		}
+
+		[GtkCallback]
+		public void BackButton_clicked (Gtk.Button button) {
+			go_back();
 		}
 
 		[GtkCallback]
@@ -306,7 +353,7 @@ namespace Gradio{
 			// Toggle Search
 			if ((event.keyval == Gdk.Key.f) && (event.state & default_modifiers) == Gdk.ModifierType.CONTROL_MASK) {
 				if(SearchBar.get_search_mode()){
-					show_previous_page();
+					go_back();
 					SearchButton.set_active(false);
 				}else{
 					SearchBar.set_search_mode(true);

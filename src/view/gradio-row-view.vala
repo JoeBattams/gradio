@@ -57,7 +57,7 @@ namespace Gradio{
 
 			this.row_activated.connect((t,a) => {
 				Row row = (Row)a;
-				Gradio.App.window.show_station_detail_page(row.station);
+				Gradio.App.window.show_station_details(row.station);
 			});
 
 		}

@@ -44,16 +44,24 @@ namespace Gradio{
 
 		[GtkChild]
 		private Box InformationBox;
-
 		[GtkChild]
 		private Box StationDescriptionBox;
-
 		[GtkChild]
 		private Label StationLikesLabel;
 
+		[GtkChild]
+		private Box SimilarStationsBox;
+		private StationProvider similar_station_provider;
+		private StationModel similar_station_model;
+		private BigTileView similar_btile_view;
+
 		private RadioStation station;
 
+		public bool reset_history { get; set; }
+
 		public StationDetailPage(){
+			this.reset_history = false;
+
 			setup_view();
 			connect_signals();
 		}
@@ -68,6 +76,15 @@ namespace Gradio{
 		private void setup_view(){
 			tbox = new TagBox();
 			StationTagsBox.add(tbox);
+
+			similar_station_model = new StationModel();
+			similar_station_provider = new StationProvider(ref similar_station_model);
+			similar_btile_view = new BigTileView(ref similar_station_model);
+			SimilarStationsBox.add(similar_btile_view);
+		}
+
+		public RadioStation get_station(){
+			return station;
 		}
 
 		public void set_station(RadioStation s){
@@ -127,6 +144,10 @@ namespace Gradio{
 			// Show warning if some information is missing
 			if(station.Tags == "" || station.Homepage == "" || station.Icon == "" || station.Title == "" || station.State == "" || station.Country == "")
 				InformationBox.set_visible(true);
+
+			// Similar Stations
+			string address = RadioBrowser.radio_stations_by_name + "antenne bayern";
+			similar_station_provider.set_address(address);
 		}
 
 		private void reset_view(){

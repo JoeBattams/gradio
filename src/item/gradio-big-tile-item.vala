@@ -21,8 +21,27 @@ namespace Gradio{
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/item/big-tile-item.ui")]
 	public class BigTile : Gtk.FlowBoxChild, Item{
 
-		public BigTile(RadioStation s){
+		[GtkChild]
+		private Label StationTitleLabel;
+		[GtkChild]
+		private Label StationLikesLabel;
+		[GtkChild]
+		private Image StationLogoImage;
 
+
+		public RadioStation station;
+
+		public BigTile(RadioStation s){
+			station = s;
+
+			// Set information
+			StationTitleLabel.set_text(station.Title);
+			StationLikesLabel.set_text(station.Votes.to_string());
+			set_logo();
+		}
+
+		private void set_logo(){
+			//TODO: insert logo loader here
 		}
 
 	}
