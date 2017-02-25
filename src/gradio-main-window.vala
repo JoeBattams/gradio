@@ -19,15 +19,6 @@ using Gst;
 
 namespace Gradio{
 
-	public enum WindowMode {
-		LIBRARY,
-		DISCOVER,
-		SEARCH,
-		DETAILS,
-		SETTINGS,
-		LOADING
-	}
-
 	[GtkTemplate (ui = "/de/haecker-felix/gradio/ui/main-window.ui")]
 	public class MainWindow : Gtk.ApplicationWindow {
 
@@ -132,7 +123,8 @@ namespace Gradio{
 
 			LibraryToggleButton.clicked.connect(show_library);
 			DiscoverToggleButton.clicked.connect(show_discover);
-			SearchBar.notify["search-mode-enabled"].connect(search_mode_activated);
+			BackButton.clicked.connect(go_back);
+			SearchBar.notify["search-mode-enabled"].connect(() => SearchButton.set_active(SearchBar.get_search_mode()));
 		}
 
 		private void setup_tray_icon(){
@@ -288,10 +280,6 @@ namespace Gradio{
 			change_mode(WindowMode.SETTINGS);
 		}
 
-		private void search_mode_activated(){
-			SearchButton.set_active(SearchBar.get_search_mode());
-		}
-
 		[GtkCallback]
 		private void SearchButton_toggled (){
 			SearchBar.set_search_mode(SearchButton.get_active());
@@ -321,10 +309,6 @@ namespace Gradio{
 			}
 		}
 
-		[GtkCallback]
-		public void BackButton_clicked (Gtk.Button button) {
-			go_back();
-		}
 
 		[GtkCallback]
         	private void VolumeButton_value_changed (double value) {

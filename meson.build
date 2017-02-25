@@ -1,4 +1,4 @@
-project('gradio', ['vala', 'c'],
+project('gradio', ['vala', 'C'],
         version : '0.3.1',
         meson_version : '>= 0.36.0',
         license : 'GPL3',

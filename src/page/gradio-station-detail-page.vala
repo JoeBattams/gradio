@@ -22,6 +22,9 @@ namespace Gradio{
 	public class StationDetailPage : Gtk.Box, Page{
 
 		[GtkChild]
+		private Stack DetailsStack;
+
+		[GtkChild]
 		private Label StationTitleLabel;
 		[GtkChild]
 		private Label StationLocationLabel;
@@ -61,6 +64,7 @@ namespace Gradio{
 
 		public StationDetailPage(){
 			this.reset_history = false;
+			show_loading();
 
 			setup_view();
 			connect_signals();
@@ -88,6 +92,7 @@ namespace Gradio{
 		}
 
 		public void set_station(RadioStation s){
+			show_loading();
 			station = s;
 
 			reset_view();
@@ -134,11 +139,11 @@ namespace Gradio{
 			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
 				string desc = AdditionalDataProvider.get_description.end(res);
 
+				StationDescriptionLabel.set_text(desc);
 				if(desc != ""){
-					StationDescriptionLabel.set_text(desc);
 					StationDescriptionBox.set_visible(true);
 				}
-
+				show_details();
 			});
 
 			// Show warning if some information is missing
@@ -151,11 +156,11 @@ namespace Gradio{
 		}
 
 		private void reset_view(){
-			StationTitleLabel.set_text("");
+			StationTitleLabel.set_text(" ");
 			StationDescriptionBox.set_visible(false);
-			StationDescriptionLabel.set_text("");
-			StationLocationLabel.set_text("");
-			tbox.set_tags("");
+			StationDescriptionLabel.set_text(" ");
+			StationLocationLabel.set_text(" ");
+			tbox.set_tags(" ");
 
 			InformationBox.set_visible(false);
 		}
@@ -178,6 +183,19 @@ namespace Gradio{
 		private void show_stop_box(){
 			StopBox.set_visible(true);
 			PlayBox.set_visible(false);
+		}
+
+		private void show_loading(){
+			DetailsStack.set_visible_child_name("loading");
+		}
+
+		private void show_error(){
+			DetailsStack.set_visible_child_name("error");
+		}
+
+		private void show_details(){
+			if(StationDescriptionLabel.get_text() != "")
+				DetailsStack.set_visible_child_name("details");
 		}
 
 		[GtkCallback]

@@ -18,6 +18,15 @@
 using Gtk;
 
 namespace Gradio{
+	public enum WindowMode {
+		LIBRARY,
+		DISCOVER,
+		SEARCH,
+		DETAILS,
+		SETTINGS,
+		LOADING
+	}
+
 	public class BackEntry{
 		public WindowMode mode;
 		public DataWrapper data;
