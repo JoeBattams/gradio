@@ -62,6 +62,7 @@ namespace Gradio{
 		DiscoverPage discover_page;
 		SearchPage search_page;
 		LibraryPage library_page;
+		SettingsPage settings_page;
 		StationDetailPage station_detail_page;
 
 		GLib.Queue<BackEntry> back_entry_stack = new GLib.Queue<BackEntry>();
@@ -92,6 +93,9 @@ namespace Gradio{
 
 			discover_page = new DiscoverPage();
 			MainStack.add_named(discover_page, page_name[WindowMode.DISCOVER]);
+
+			settings_page = new SettingsPage();
+			MainStack.add_named(settings_page, page_name[WindowMode.SETTINGS]);
 
 			// showing library on startup
 			change_mode(WindowMode.LIBRARY);
@@ -180,7 +184,7 @@ namespace Gradio{
 			// do action for mode
 			switch(current_mode){
 				case WindowMode.SEARCH:{
-					break;
+					SearchEntry.set_text(data.search); break;
 				};
 				case WindowMode.DISCOVER: {
 					clean_back_entry_stack();
@@ -214,8 +218,8 @@ namespace Gradio{
 
 			switch(entry.mode){
 				case WindowMode.DETAILS: change_mode(entry.mode, entry.data); break;
-				case WindowMode.SEARCH: SearchEntry.set_text(entry.data.search); change_mode(entry.mode); break;
-				default: change_mode (entry.mode);break;
+				case WindowMode.SEARCH: change_mode(entry.mode, entry.data); break;
+				default: change_mode (entry.mode); break;
 			}
 
 

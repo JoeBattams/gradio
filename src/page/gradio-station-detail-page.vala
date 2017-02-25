@@ -60,10 +60,8 @@ namespace Gradio{
 
 		private RadioStation station;
 
-		public bool reset_history { get; set; }
 
 		public StationDetailPage(){
-			this.reset_history = false;
 			show_loading();
 
 			setup_view();

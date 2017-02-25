@@ -102,7 +102,7 @@ namespace Gradio {
 
 		private void create_app_menu () {
 			var action = new GLib.SimpleAction ("preferences", null);
-			action.activate.connect (() => { this.show_preferences_dialog (); });
+			action.activate.connect (() => { this.window.show_settings (); });
 			this.add_action (action);
 
 			action = new GLib.SimpleAction ("about", null);
@@ -125,13 +125,6 @@ namespace Gradio {
 
 		public void report_an_error(){
 			Util.open_website("https://github.com/haecker-felix/gradio/issues/new");
-		}
-
-		private void show_preferences_dialog(){
-			SettingsDialog swindow = new SettingsDialog();
-			swindow.set_transient_for(window);
-			swindow.set_modal(true);
-			swindow.show();
 		}
 
 		private void show_about_dialog(){
