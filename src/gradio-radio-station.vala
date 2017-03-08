@@ -126,8 +126,6 @@ namespace Gradio{
 
 		private void added_to_library_handler(RadioStation s){
 			if(Title != null){
-				message(Title + " added to library");
-
 				if(s.ID == ID){
 					added_to_library();
 

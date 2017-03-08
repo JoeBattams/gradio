@@ -134,18 +134,27 @@ namespace Gradio{
 		}
 
 		private void create_database(){
-			message("Create database...");
+			message("Create new database...");
 
 			File file = File.new_for_path (database_path);
 
-			if(!file.query_exists()){
-				file.create (FileCreateFlags.NONE);
+			try{
+				if(!file.query_exists()){
+					// create dir
+					File dir = File.new_for_path (Path.build_filename (Environment.get_user_data_dir (), "gradio"));
+					dir.make_directory_with_parents();
 
-				init_database();
-				open_database();
-			}else{
-				warning("Database already exists.");
-				open_database();
+					// create file
+					file.create (FileCreateFlags.NONE);
+
+					open_database();
+					init_database();
+				}else{
+					warning("Database already exists.");
+					open_database();
+				}
+			}catch(Error e){
+				critical("Cannot create new database: " + e.message);
 			}
 		}
 
