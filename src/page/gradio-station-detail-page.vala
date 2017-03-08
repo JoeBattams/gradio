@@ -29,8 +29,6 @@ namespace Gradio{
 		[GtkChild]
 		private Label StationLocationLabel;
 		[GtkChild]
-		private Box StationTagsBox;
-		[GtkChild]
 		private Label StationDescriptionLabel;
 
 		private TagBox tbox;
@@ -48,15 +46,16 @@ namespace Gradio{
 		[GtkChild]
 		private Box InformationBox;
 		[GtkChild]
-		private Box StationDescriptionBox;
-		[GtkChild]
 		private Label StationLikesLabel;
-
 		[GtkChild]
-		private Box SimilarStationsBox;
+		private ButtonBox ActionBox;
+
 		private StationProvider similar_station_provider;
 		private StationModel similar_station_model;
 		private BigTileView similar_btile_view;
+
+		[GtkChild]
+		private Box Bottom;
 
 		private RadioStation station;
 
@@ -76,13 +75,25 @@ namespace Gradio{
 		}
 
 		private void setup_view(){
-			tbox = new TagBox();
-			StationTagsBox.add(tbox);
+			ItemGroup action_group = new ItemGroup("Available actions");
+			action_group.add_row(ActionBox);
+			Bottom.pack_start(action_group);
 
+			ItemGroup description_group = new ItemGroup("Description");
+			description_group.add_row(StationDescriptionLabel);
+			Bottom.pack_start(description_group);
+
+			ItemGroup tags_group = new ItemGroup("Tags");
+			tbox = new TagBox();
+			tags_group.add_row(tbox);
+			Bottom.pack_start(tags_group);
+
+			ItemGroup similar_stations_group = new ItemGroup("Similar Stations");
 			similar_station_model = new StationModel();
 			similar_station_provider = new StationProvider(ref similar_station_model);
 			similar_btile_view = new BigTileView(ref similar_station_model);
-			SimilarStationsBox.add(similar_btile_view);
+			similar_stations_group.add_row(similar_btile_view);
+			Bottom.pack_start(similar_stations_group);
 		}
 
 		public RadioStation get_station(){
@@ -136,11 +147,7 @@ namespace Gradio{
 			// Description
 			AdditionalDataProvider.get_description.begin(station, (obj,res) => {
 				string desc = AdditionalDataProvider.get_description.end(res);
-
 				StationDescriptionLabel.set_text(desc);
-				if(desc != ""){
-					StationDescriptionBox.set_visible(true);
-				}
 				show_details();
 			});
 
@@ -155,7 +162,6 @@ namespace Gradio{
 
 		private void reset_view(){
 			StationTitleLabel.set_text(" ");
-			StationDescriptionBox.set_visible(false);
 			StationDescriptionLabel.set_text(" ");
 			StationLocationLabel.set_text(" ");
 			tbox.set_tags(" ");
