@@ -114,7 +114,7 @@ namespace Gradio{
 	       		player_toolbar.set_visible(false);
 
 			//Load css
-			Util.add_stylesheet("gradio.css");
+			Util.add_stylesheet();
 
 	       		Bottom.pack_end(player_toolbar);
 		}

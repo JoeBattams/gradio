@@ -162,7 +162,7 @@ namespace Gradio {
 	}
 
 	int main (string[] args){
-		message(">> Starting Gradio version %s <<", GRADIO_VERSION);
+		message("Starting Gradio version %s ", GRADIO_VERSION);
 
 		// Init gstreamer
 		Gst.init (ref args);
